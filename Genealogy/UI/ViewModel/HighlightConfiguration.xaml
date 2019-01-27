@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             Title="Color Picker"
+             Title="Highlight Configuration"
              xmlns:local="clr-namespace:Genealogy.UI" Height="429.73" Width="520.557"
              WindowStyle="ToolWindow">
     <Window.Resources>

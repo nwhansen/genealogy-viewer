@@ -13,7 +13,7 @@
     <Grid>
         <Button Padding="5" Margin="8" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="44" Height="28" Click="Graph" >Graph</Button>
         <StackPanel>
-            <TextBlock Margin="10" HorizontalAlignment="Center">Configure the what Individuals show up on the graph</TextBlock>
+            <TextBlock Margin="10" HorizontalAlignment="Center">Configure what Individuals show up on the graph</TextBlock>
             <Border BorderBrush="LightGray" BorderThickness="0,1" Margin="8,0"/>
             <StackPanel Orientation="Horizontal" Visibility="{Binding CanLimitAncestors, Converter={StaticResource Converter}}">
                 <TextBlock Margin="5,0,3,0">Limit Ancestors Shown:</TextBlock>

@@ -158,14 +158,18 @@ namespace Genealogy.Implementations {
 				throw new Exception(string.Format("Missing Father Header on line {0}", LineCount));
 			}
 			MotherIndex = IndexOf("Mother", fields);
-			if (FatherIndex == -1) {
+			if (MotherIndex == -1) {
 				throw new Exception(string.Format("Missing Mother Header on line {0}", LineCount));
 			}
 			//These can be -1
 			DeathDateIndex = IndexOf("Death Date", fields);
 			BirthDateIndex = IndexOf("Birth Date", fields);
 			//Figure out where we start attributes
-			AttributeStart = Max(DeathDateIndex + 1, BirthDateIndex + 1, AttributeStart);
+			AttributeStart = Max(AttributeStart,
+								DeathDateIndex + 1,
+								BirthDateIndex + 1,
+								FatherIndex + 1,
+								MotherIndex + 1);
 		}
 
 		/// <summary>
@@ -190,8 +194,9 @@ namespace Genealogy.Implementations {
 		/// <param name="haystack">The haystack to search</param>
 		/// <returns>the index or -1</returns>
 		private static int IndexOf(string needle, string[] haystack) {
+			needle = needle.Trim();
 			for (int i = 0; i < haystack.Length; i++) {
-				if (needle.Equals(haystack[i], StringComparison.InvariantCultureIgnoreCase))
+				if (needle.Equals(haystack[i]?.Trim(), StringComparison.InvariantCultureIgnoreCase))
 					return i;
 			}
 			return -1;
