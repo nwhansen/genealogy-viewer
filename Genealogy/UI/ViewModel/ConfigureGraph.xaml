@@ -17,8 +17,8 @@
             <Border BorderBrush="LightGray" BorderThickness="0,1" Margin="8,0"/>
             <StackPanel Orientation="Horizontal" Visibility="{Binding CanLimitAncestors, Converter={StaticResource Converter}}">
                 <TextBlock Margin="5,0,3,0">Limit Ancestors Shown:</TextBlock>
-                <CheckBox Margin="3,0" IsChecked="{Binding ShowAncestors}" VerticalAlignment="Center"></CheckBox>
-                <toolkit:IntegerUpDown Width="80" IsEnabled="{Binding ShowAncestors}" Minimum="{Binding Path=AncestorCount.Min}" Maximum="{Binding Path=AncestorCount.Max}" Value="{Binding Path=AncestorCount.Value}" />
+                <CheckBox Margin="3,0" IsChecked="{Binding LimitAncestors}" VerticalAlignment="Center"></CheckBox>
+                <toolkit:IntegerUpDown Width="80" IsEnabled="{Binding LimitAncestors}" Minimum="{Binding Path=AncestorCount.Min}" Maximum="{Binding Path=AncestorCount.Max}" Value="{Binding Path=AncestorCount.Value}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Visibility="{Binding CanHideChildren, Converter={StaticResource Converter}}">
                 <TextBlock Margin="5,3,3,3">Show Children:</TextBlock>
