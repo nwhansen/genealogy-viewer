@@ -65,7 +65,6 @@ namespace Genealogy.Model {
 					.Replace("%Sex", IsFemale ? "Female" : "Male")
 					.Replace("%BirthDate", GetDate(BirthDate))
 					.Replace("%DeathDate", GetDate(DeathDate));
-				//BIRTHDATE TDB
 			}
 		}
 

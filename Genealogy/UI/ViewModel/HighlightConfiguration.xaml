@@ -25,46 +25,51 @@
     </Window.Resources>
     <DockPanel LastChildFill="True">
         <WrapPanel DockPanel.Dock="Top" Margin="0,0,2,0">
+            <WrapPanel.Resources>
+                <Style TargetType="Label">
+                    <Setter Property="Height" Value="Auto" />
+                </Style>
+            </WrapPanel.Resources>
             <StackPanel Orientation="Horizontal">
-                <Label Height="25">Founder Color</Label>
+                <Label>Founder Color</Label>
                 <ComboBox ItemsSource="{Binding AllColors}" SelectedItem="{Binding FounderColor}" ItemTemplate="{StaticResource DropDown}" Width="80"></ComboBox>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <Label Height="25">Founder Highlight Color</Label>
+                <Label>Founder Highlight Color</Label>
                 <ComboBox ItemsSource="{Binding AllColors}" SelectedItem="{Binding FounderHighlightColor}" ItemTemplate="{StaticResource DropDown}" Width="80"></ComboBox>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <Label Height="25">Individual Color</Label>
+                <Label>Individual Color</Label>
                 <ComboBox ItemsSource="{Binding AllColors}" SelectedItem="{Binding IndividualColor}" ItemTemplate="{StaticResource DropDown}" Width="80"></ComboBox>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <Label Height="25">Selected Parent Color</Label>
+                <Label>Selected Parent Color</Label>
                 <ComboBox ItemsSource="{Binding AllColors}" SelectedItem="{Binding SelectedParentColor}" ItemTemplate="{StaticResource DropDown}" Width="80"></ComboBox>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <Label Height="25">Individual Highlight Color</Label>
+                <Label>Individual Highlight Color</Label>
                 <ComboBox ItemsSource="{Binding AllColors}" SelectedItem="{Binding IndividualHighlightColor}" ItemTemplate="{StaticResource DropDown}" Width="80"></ComboBox>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <Label Height="25">Parent Individual Hightlight Color</Label>
+                <Label>Parent of Interested Individual Highlight Color</Label>
                 <ComboBox ItemsSource="{Binding AllColors}" SelectedItem="{Binding ParentIndividualHightlightColor}" ItemTemplate="{StaticResource DropDown}" Width="80"></ComboBox>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <Label Height="25">Interested Founder Color</Label>
+                <Label>Interested Founder Color</Label>
                 <ComboBox ItemsSource="{Binding AllColors}" SelectedItem="{Binding InterestedFounderColor}" ItemTemplate="{StaticResource DropDown}" Width="80"></ComboBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal" ToolTip="When an individual is of interest in the graph what color will they be">
-                <Label Height="25">Interested Individual Color</Label>
+                <Label>Interested Individual Color</Label>
                 <ComboBox ItemsSource="{Binding AllColors}" SelectedItem="{Binding InterestedIndividualColor}" ItemTemplate="{StaticResource DropDown}" Width="80"></ComboBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal" ToolTip="When an individual is of interest in the graph what color will they be">
-                <Label Height="25">Individual Direct Children Color</Label>
+                <Label>Individual Direct Children Color</Label>
                 <ComboBox ItemsSource="{Binding AllColors}" SelectedItem="{Binding DirectChildrenColor}" ItemTemplate="{StaticResource DropDown}" Width="80"></ComboBox>
             </StackPanel>
         </WrapPanel>

@@ -69,6 +69,13 @@ namespace Genealogy.Model {
 			}
 		}
 
-
+		/// <summary>
+		/// Returns if this attribute exists in our attribute system
+		/// </summary>
+		/// <param name="attribute">The attribute to test</param>
+		/// <returns>If this attribute is in the set of attributes</returns>
+		public bool Contains(IndividualAttribute attribute) {
+			return allAttributes.Contains(attribute);
+		}
 	}
 }

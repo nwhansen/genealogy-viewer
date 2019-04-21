@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,25 +10,46 @@ using Genealogy.ViewModel.Configuration;
 using Microsoft.Msagl.Drawing;
 
 namespace Genealogy.ViewModel.UI {
-	public class GraphViewModel {
+	public class GraphViewModel : INotifyPropertyChanged {
 
-		public HighlightConfiguration HighlightConfiguration { get; private set; }
+		private bool isGraphing;
+		private IndividualViewModel selectedIndividual;
 
-		public IEnumerable<Individual> Individuals { get; private set; }
+		public event PropertyChangedEventHandler PropertyChanged;
 
 		/// <summary>
-		/// Creates the graph view model used to create the graph
+		/// The Currently Selected Individual
 		/// </summary>
-		/// <param name="colorConfiguration"></param>
-		/// <param name="individuals"></param>
-		public GraphViewModel(HighlightConfiguration highlightConfiguration, IEnumerable<Individual> individuals) {
-			Individuals = individuals;
-			HighlightConfiguration = highlightConfiguration;
+		public IndividualViewModel SelectedIndividual {
+			get => selectedIndividual;
+			set {
+				if (value != selectedIndividual) {
+					selectedIndividual = value;
+					PropertyChanged.Notify(this, "SelectedIndividual");
+				}
+			}
 		}
 
-		public GraphViewModel(HighlightConfigurationViewModel highlightConfigurationViewModel, IEnumerable<IndividualViewModel> individualViewModels)
-			: this(highlightConfigurationViewModel.CloneConfiguration(), individualViewModels.Select(i => i.Wrapped)) {
+		public bool IsGraphing {
+			get => isGraphing;
+			set {
+				if (value != isGraphing) {
+					isGraphing = value;
+					PropertyChanged.Notify(this, "IsGraphing");
+				}
+			}
+		}
 
+		public HighlightConfigurationViewModel HighlightConfiguration { get; }
+
+		public IEnumerable<IndividualViewModel> Individuals { get; }
+
+		public IndividualManagerViewModel IndividualManager { get; }
+
+		public GraphViewModel(HighlightConfigurationViewModel highlightConfigurationViewModel, IEnumerable<IndividualViewModel> individualViewModels, IndividualManagerViewModel individualManager) {
+			HighlightConfiguration = highlightConfigurationViewModel;
+			Individuals = individualViewModels;
+			IndividualManager = individualManager;
 		}
 	}
 }

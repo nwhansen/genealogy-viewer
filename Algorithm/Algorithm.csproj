@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Algorithms\FamilyTree.cs" />
     <Compile Include="Algorithms\AttributeHighlighting.cs" />
+    <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="FamilyTreeExtension.cs" />
     <Compile Include="Intersection.cs" />
     <Compile Include="IterateTree.cs" />

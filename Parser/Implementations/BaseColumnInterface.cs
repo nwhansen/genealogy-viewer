@@ -36,12 +36,39 @@ namespace Genealogy.Implementations {
 
 		private ParsingState parseState;
 
-		protected int DeathDateIndex { get; private set; }
-		protected int BirthDateIndex { get; private set; }
-		protected int FatherIndex { get; private set; }
-		protected int MotherIndex { get; private set; }
-		protected int AttributeStart { get; private set; }
-		protected int SexIndex { get; private set; }
+		protected struct IndividualParseState {
+			public readonly static IndividualParseState Default = new IndividualParseState(3, 2, -1, -1, 1, 4);
+
+			public int DeathDateIndex { get; }
+			public int BirthDateIndex { get; }
+			public int FatherIndex { get; }
+			public int MotherIndex { get; }
+			public int AttributeStart { get; }
+			public int SexIndex { get; }
+
+			public IndividualParseState(int father, int mother, int death, int birth, int sex, int attribute) {
+				FatherIndex = father;
+				MotherIndex = mother;
+				DeathDateIndex = death;
+				BirthDateIndex = birth;
+				SexIndex = sex;
+				AttributeStart = attribute;
+			}
+		}
+
+		protected struct AttributeParseState {
+
+			public readonly static AttributeParseState Default = new AttributeParseState(-1);
+			public int DefaultIndex { get; }
+
+			public AttributeParseState(int defaultIndex) {
+				DefaultIndex = defaultIndex;
+			}
+		}
+
+		protected IndividualParseState IndividualState { get; private set; }
+		protected AttributeParseState AttributeState { get; private set; }
+
 		protected int LineCount { get; private set; }
 
 
@@ -58,6 +85,7 @@ namespace Genealogy.Implementations {
 					switch (parseState) {
 						case ParsingState.Unknown when IsAttributeHeader(fields):
 							//Start Attribute parsing
+							ParseAttributeHeaderLine(fields);
 							parseState = ParsingState.Attributes;
 							continue;
 						case ParsingState.Unknown when IsIndividualHeader(fields):
@@ -76,7 +104,7 @@ namespace Genealogy.Implementations {
 							parseState = ParsingState.Individuals;
 							continue;
 						case ParsingState.Attributes:
-							ParseAttributeLine(fields, manager.AttributesFactory);
+							ParseAttributeLine(fields, manager);
 							break;
 						case ParsingState.Individuals:
 							ParseIndividualLine(manager, fields);
@@ -92,12 +120,8 @@ namespace Genealogy.Implementations {
 		/// </summary>
 		private void Reset() {
 			LineCount = 0;
-			DeathDateIndex = -1;
-			BirthDateIndex = -1;
-			FatherIndex = 3;
-			MotherIndex = 2;
-			AttributeStart = 4;
-			SexIndex = 1;
+			AttributeState = AttributeParseState.Default;
+			IndividualState = IndividualParseState.Default;
 		}
 
 		/// <summary>
@@ -106,14 +130,25 @@ namespace Genealogy.Implementations {
 		/// <param name="filename"></param>
 		/// <returns></returns>
 		protected abstract ParserHelper LoadFile(string filename);
-
+		/// <summary>
+		/// Processes the attribute header line for key header lines
+		/// </summary>
+		/// <param name="fields"></param>
+		private void ParseAttributeHeaderLine(string[] fields) {
+			int defaultIndex = IndexOf("Highlight", fields);
+			AttributeState = new AttributeParseState(defaultIndex);
+		}
 
 		/// <summary>
 		/// Reads the attribute field lines
 		/// </summary>
 		/// <param name="fields">The columns to read</param>
-		private void ParseAttributeLine(string[] fields, IndividualAttributesFactory attributesFactory) {
-			attributesFactory.CreateAttribute(fields[0], fields[1]);
+		private void ParseAttributeLine(string[] fields, IndividualManager individualManager) {
+			var attributesFactory = individualManager.AttributesFactory;
+			var attribute = attributesFactory.CreateAttribute(fields[0], fields[1]);
+			if (fields.Length > AttributeState.DefaultIndex && IsTrue(fields[AttributeState.DefaultIndex])) {
+				individualManager.AddDefaultHighlighted(attribute);
+			}
 		}
 
 		/// <summary>
@@ -123,29 +158,29 @@ namespace Genealogy.Implementations {
 		/// <param name="fields">The fields to load</param>
 		private void ParseIndividualLine(IndividualManager manager, string[] fields) {
 			//We need at least as many columns as our attribute start (fail more predictably)
-			if (fields.Length < AttributeStart)
-				Array.Resize(ref fields, AttributeStart);
+			if (fields.Length < IndividualState.AttributeStart)
+				Array.Resize(ref fields, IndividualState.AttributeStart);
 			string id = fields[0];
 			if (string.IsNullOrWhiteSpace(id)) {
 				throw new Exception(string.Format("Individual ID is missing at line: {0}", LineCount));
 			}
 
-			bool female = IsFemale(fields[SexIndex]);
-			string motherCode = fields[MotherIndex];
-			string fatherCode = fields[FatherIndex];
+			bool female = IsFemale(fields[IndividualState.SexIndex]);
+			string motherCode = fields[IndividualState.MotherIndex];
+			string fatherCode = fields[IndividualState.FatherIndex];
 
 			Individual individual = manager.CreateIndividual(id, female, fatherCode, motherCode, false);
-			if (DeathDateIndex > 0) {
-				if (DateTime.TryParse(fields[DeathDateIndex], out DateTime death)) {
+			if (IndividualState.DeathDateIndex > 0) {
+				if (DateTime.TryParse(fields[IndividualState.DeathDateIndex], out DateTime death)) {
 					individual.DeathDate = death;
 				}
 			}
-			if (BirthDateIndex > 0) {
-				if (DateTime.TryParse(fields[BirthDateIndex], out DateTime birth)) {
+			if (IndividualState.BirthDateIndex > 0) {
+				if (DateTime.TryParse(fields[IndividualState.BirthDateIndex], out DateTime birth)) {
 					individual.BirthDate = birth;
 				}
 			}
-			for (int i = AttributeStart; i < fields.Length; i++) {
+			for (int i = IndividualState.AttributeStart; i < fields.Length; i++) {
 				if (string.IsNullOrEmpty(fields[i]))
 					continue;
 				individual.AddAttribute(manager.AttributesFactory.CreateAttribute(fields[i], fields[i]));
@@ -153,23 +188,24 @@ namespace Genealogy.Implementations {
 		}
 
 		private void ParseIndividualHeaderLine(string[] fields) {
-			FatherIndex = IndexOf("Father", fields);
-			if (FatherIndex == -1) {
+			int fatherIndex = IndexOf("Father", fields);
+			if (fatherIndex == -1) {
 				throw new Exception(string.Format("Missing Father Header on line {0}", LineCount));
 			}
-			MotherIndex = IndexOf("Mother", fields);
-			if (MotherIndex == -1) {
+			int motherIndex = IndexOf("Mother", fields);
+			if (motherIndex == -1) {
 				throw new Exception(string.Format("Missing Mother Header on line {0}", LineCount));
 			}
 			//These can be -1
-			DeathDateIndex = IndexOf("Death Date", fields);
-			BirthDateIndex = IndexOf("Birth Date", fields);
+			int deathDateIndex = IndexOf("Death Date", fields);
+			int birthDateIndex = IndexOf("Birth Date", fields);
 			//Figure out where we start attributes
-			AttributeStart = Max(AttributeStart,
-								DeathDateIndex + 1,
-								BirthDateIndex + 1,
-								FatherIndex + 1,
-								MotherIndex + 1);
+			int attributeStart = Max(IndividualParseState.Default.AttributeStart,
+								deathDateIndex + 1,
+								birthDateIndex + 1,
+								fatherIndex + 1,
+								motherIndex + 1);
+			IndividualState = new IndividualParseState(fatherIndex, motherIndex, deathDateIndex, birthDateIndex, 1, attributeStart);
 		}
 
 		/// <summary>
@@ -234,9 +270,21 @@ namespace Genealogy.Implementations {
 				|| value.Equals("fem", StringComparison.CurrentCultureIgnoreCase)
 				|| value.Equals("f", StringComparison.CurrentCultureIgnoreCase)
 				)
-
 				return true;
 			return false;
 		}
+
+		public static bool IsTrue(string value) {
+			if (string.IsNullOrEmpty(value))
+				return false;
+			if (value.Equals("y", StringComparison.CurrentCultureIgnoreCase)
+				|| value.Equals("yes", StringComparison.CurrentCultureIgnoreCase)
+				|| value.Equals("true", StringComparison.CurrentCultureIgnoreCase)
+				|| value.Equals("t", StringComparison.CurrentCultureIgnoreCase)
+				)
+				return true;
+			return false;
+		}
+
 	}
 }

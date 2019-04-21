@@ -1,5 +1,8 @@
-﻿using Genealogy.Model;
+﻿using Algorithm;
+using Genealogy.Model;
 using Genealogy.UIInteraction;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
@@ -9,16 +12,25 @@ namespace Genealogy.ViewModel {
 	/// </summary>
 	public class IndividualViewModel : INotifyPropertyChanged {
 
-		private IndividualViewModel _father;
-		private IndividualViewModel _mother;
+		private readonly IndividualManagerViewModel individualManager;
+		private IndividualViewModel mother, father;
+		private ObservableCollection<IndividualViewModel> children;
+		private ObservableCollection<IndividualAttributeViewModel> attributes;
+
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		#region Public Properties
+
 		/// <summary>
 		/// The Individual that is wrapped by this model
 		/// </summary>
 		public Individual Wrapped { get; }
+
+		/// <summary>
+		/// The Display Name to show taking into consideration if the custom display is enabled
+		/// </summary>
+		public string Display => individualManager.EnableCustomFormat ? CustomDisplayCode : DisplayCode;
 
 		/// <summary>
 		/// The DisplayName to show the user
@@ -30,6 +42,7 @@ namespace Genealogy.ViewModel {
 				if (Wrapped.DisplayCode != value) {
 					Wrapped.DisplayCode = value;
 					PropertyChanged.Notify(this, "DisplayCode");
+					PropertyChanged.Notify(this, "CustomDisplayCode");
 				}
 			}
 		}
@@ -37,21 +50,43 @@ namespace Genealogy.ViewModel {
 		/// <summary>
 		/// A more customized display name
 		/// </summary>
-		public string CustomDisplayCode { get => Wrapped.CustomDisplayCode; }
+		public string CustomDisplayCode => Wrapped.CustomDisplayCode;
 
 		/// <summary>
-		/// The View Model for the Mother
+		/// The unique identifier for this individual
+		/// </summary>
+		public Guid UniqueIdentifier => Wrapped.UniqueIdentifier;
+
+
+		/// <summary>
+		/// If this individual is a founder
+		/// </summary>
+		public bool IsFounder => Wrapped.IsFounder;
+
+
+		/// <summary>
+		/// Returns an enumeration of the parents 
+		/// </summary>
+		public IEnumerable<IndividualViewModel> Parents {
+			get {
+				if (Father != null) {
+					yield return Father;
+				}
+				if (Mother != null) {
+					yield return Mother;
+				}
+			}
+		}
+
+		/// <summary>
+		/// The View Model for the Father
 		/// </summary>
 		public IndividualViewModel Father {
 			get {
-				//Maintain state
-				if (Wrapped.Father != null && Wrapped.Father != _father.Wrapped) {
-					_father = new IndividualViewModel(Wrapped.Father);
-				} else if (Wrapped.Father == null && _father != null) {
-					_father = null;
-					return null;
+				if (father == null && Wrapped.Father != null) {
+					father = individualManager[Wrapped.Father];
 				}
-				return _father;
+				return father;
 			}
 		}
 
@@ -60,49 +95,51 @@ namespace Genealogy.ViewModel {
 		/// </summary>
 		public IndividualViewModel Mother {
 			get {
-				//Maintain state
-				if (Wrapped.Mother != null && Wrapped.Mother != _mother.Wrapped) {
-					_mother = new IndividualViewModel(Wrapped.Mother);
-				} else if (Wrapped.Mother == null && _mother != null) {
-					_mother = null;
-					return null;
+				if (mother == null && Wrapped.Mother != null) {
+					mother = individualManager[Wrapped.Mother];
 				}
-				return _mother;
+				return mother;
+			}
+		}
+
+		/// <summary>
+		/// All of the children for the individual
+		/// </summary>
+		public ObservableCollection<IndividualViewModel> Children {
+			get {
+				//Lazy initialization
+				if (children == null) {
+					children = new ObservableCollection<IndividualViewModel>();
+					Wrapped.AllChildren.ToViewModel(individualManager).ForEach(children.Add);
+				}
+				return children;
 			}
 		}
 
 		/// <summary>
 		/// The Attributes for the individual
 		/// </summary>
-		public ObservableCollection<IndividualAttributeViewModel> Attributes { get; } = new ObservableCollection<IndividualAttributeViewModel>();
+		public ObservableCollection<IndividualAttributeViewModel> Attributes {
+			get {
+				if (attributes == null) {
+					attributes = new ObservableCollection<IndividualAttributeViewModel>();
+					Wrapped.Attributes.ToViewModel(individualManager.AttributeFactory).ForEach(attributes.Add);
+				}
+				return attributes;
+			}
+		}
 
 		#endregion
 
 		/// <summary>
 		/// Creates a view model for an individual
 		/// </summary>
-		/// <param name="wrapped">The individual to wrap</param>
-		public IndividualViewModel(Individual wrapped) : this(wrapped, true) { }
-
-		/// <summary>
-		/// Generates a view model controlling if we should wrap the parents (helpful for direct relationship viewing)
-		/// </summary>
 		/// <param name="wrapped">The view model to wrap</param>
-		/// <param name="wrapParents">If we should wrap the parents</param>
-		internal IndividualViewModel(Individual wrapped, bool wrapParents) {
+		/// <param name="individualManager">The individual view manager to be used to process relatives</param>
+		public IndividualViewModel(Individual wrapped, IndividualManagerViewModel individualManager) {
 			Wrapped = wrapped;
-			//Copy the attributes
-			foreach (var attr in Wrapped.Attributes) {
-				Attributes.Add(new IndividualAttributeViewModel(attr));
-			}
-			if (wrapParents && Wrapped.Father != null) {
-				//Don't cascade upwards (prevents insane model pollution)
-				_father = new IndividualViewModel(Wrapped.Father, false);
-			}
-			if (wrapParents && Wrapped.Mother != null) {
-				//Don't cascade upwards (prevents insane model pollution)
-				_mother = new IndividualViewModel(Wrapped.Mother, false);
-			}
+			this.individualManager = individualManager;
+			//We initialize lazily since our related VM's may not exist yet. 
 		}
 
 	}

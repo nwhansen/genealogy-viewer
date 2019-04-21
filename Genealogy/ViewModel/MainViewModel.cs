@@ -16,7 +16,6 @@ namespace Genealogy.ViewModel {
 
 		private FileInterfaceFactory interfaceFactory = new FileInterfaceFactory();
 		private IndividualViewModel _selectedIndividual;
-		private IndividualManager individualManager;
 		private HighlightConfigurationViewModel globalHighlight;
 		private readonly Action canGraphSelectedIndividualChanged;
 		private readonly Action computeTrueNegativeChanged;
@@ -25,6 +24,9 @@ namespace Genealogy.ViewModel {
 		private readonly Action graphPossibleNegatives;
 
 		#region Public Properties
+
+
+		public IndividualManagerViewModel IndividualManagerViewModel { get; private set; }
 
 		public ObservableCollection<IndividualViewModel> Individuals { get; } = new ObservableCollection<IndividualViewModel>();
 
@@ -105,11 +107,6 @@ namespace Genealogy.ViewModel {
 		public event EventHandler<PresentEventArgs> PresentSimpleViewModel;
 
 		/// <summary>
-		/// Requests to display a graph to a user
-		/// </summary>
-		public event EventHandler<PresentViewModelEventArgs<GraphViewModel>> PresentDisplayGraph;
-
-		/// <summary>
 		/// Requests to open an Open File Dialog to the user
 		/// </summary>
 		public event EventHandler<PresentViewModelEventArgs<OpenFileViewModel>> PresentOpenFile;
@@ -127,11 +124,12 @@ namespace Genealogy.ViewModel {
 		/// </summary>
 		/// <param name="individualManager">The individual manager to use for our population</param>
 		public MainViewModel(IndividualManager individualManager) {
-			this.individualManager = individualManager ?? new IndividualManager();
-			GlobalHighlight = new HighlightConfigurationViewModel(new HighlightConfiguration(this.individualManager.AttributesFactory));
+			IndividualManagerViewModel = new IndividualManagerViewModel(individualManager);
+			GlobalHighlight = new HighlightConfigurationViewModel(IndividualManagerViewModel.AttributeFactory);
 			GraphSelectedIndividualCommand = new CommandWrapper(() => SelectedIndividual != null, GraphIndividual, out canGraphSelectedIndividualChanged);
 			ConfigureGlobalHighlightCommand = new CommandWrapper(() => PresentSimpleViewModel?.Present(this, GlobalHighlight, true));
-			ConfigureGlobalPopulationSettingsCommand = new CommandWrapper(() => PresentSimpleViewModel?.Present(this, new PopulationConfigurationViewModel(individualManager)));
+			ConfigureGlobalPopulationSettingsCommand = new CommandWrapper(() => PresentSimpleViewModel?.Present(this,
+				new PopulationConfigurationViewModel(IndividualManagerViewModel.Wrapped)));
 			OpenFileCommand = new CommandWrapper(ReadFileFile);
 			ComputeTrueNegativeCommand = new CommandWrapper(HasAttributePopulation, GraphComputeTrueNegative, out computeTrueNegativeChanged);
 			GraphWithAttributeCommand = new CommandWrapper(HasAttributePopulation, GraphWithAttribute, out graphWithAttributeChanged);
@@ -174,24 +172,27 @@ namespace Genealogy.ViewModel {
 				try {
 					fileInterface = interfaceFactory.CreateFileInterface(viewModel.Path);
 				} catch (Exception e) {
-					PresentPrompt?.Invoke(this, new ConfirmationViewModelEventArgs(e.Message, "Unable to load file", ConfirmationViewModelEventArgs.ConfirmationType.Ok));
+					PresentPrompt?.Present(this, e.Message, "Unable to load file", ConfirmationViewModelEventArgs.ConfirmationType.Ok);
 					return;
 				}
 				try {
-					individualManager = fileInterface.ParseFile(viewModel.Path);
+					IndividualManagerViewModel = new IndividualManagerViewModel(fileInterface.ParseFile(viewModel.Path));
 				} catch (Exception e) {
-					PresentPrompt?.Invoke(this, new ConfirmationViewModelEventArgs(e.Message, "Unable to read file", ConfirmationViewModelEventArgs.ConfirmationType.Ok));
+					PresentPrompt?.Present(this, e.Message, "Unable to read file", ConfirmationViewModelEventArgs.ConfirmationType.Ok);
 				}
 				//Clone the colors but not the attributes
-				GlobalHighlight = globalHighlight.Clone(individualManager.AttributesFactory);
+				GlobalHighlight = globalHighlight.Clone(IndividualManagerViewModel.AttributeFactory);
+				IndividualManagerViewModel.DefaultHighlighted.ForEach(GlobalHighlight.AddHighlight);
 				//Rebuild our list of individuals
 				BuildList();
-				var updateAttributes = new ConfirmationViewModelEventArgs("Do you want to set the highlighting settings",
-																			"Update Highlighting",
-																			ConfirmationViewModelEventArgs.ConfirmationType.YesNo);
-				PresentPrompt?.Invoke(this, updateAttributes);
-				if (updateAttributes.InteractionState == ViewModelInteractionState.Accepted) {
-					PresentSimpleViewModel?.Invoke(this, new PresentViewModelEventArgs<HighlightConfigurationViewModel>(GlobalHighlight, true));
+				//We wont prompt for colors but at this point they probalby wanted to avoid that
+				if (!IndividualManagerViewModel.DefaultHighlighted.Any()) {
+					var result = PresentPrompt?.Present(this, "Do you want to set the highlighting settings",
+																				"Update Highlighting",
+																				ConfirmationViewModelEventArgs.ConfirmationType.YesNo);
+					if (result == ViewModelInteractionState.Accepted) {
+						PresentSimpleViewModel?.Present(this, GlobalHighlight, true);
+					}
 				}
 				graphEveryoneChanged?.Invoke();
 				graphPossibleNegatives?.Invoke();
@@ -203,8 +204,8 @@ namespace Genealogy.ViewModel {
 		/// </summary>
 		private void BuildList() {
 			Individuals.Clear();
-			foreach (Individual individual in individualManager.AllIndividuals) {
-				Individuals.Add(new IndividualViewModel(individual));
+			foreach (IndividualViewModel individual in IndividualManagerViewModel.Individuals) {
+				Individuals.Add(individual);
 			}
 		}
 
@@ -214,7 +215,7 @@ namespace Genealogy.ViewModel {
 		/// View Model Logic to graph all individuals
 		/// </summary>
 		private void GraphEveryOne() {
-			PresentDisplayGraph?.Present(this, GlobalHighlight.Clone(), Individuals);
+			PresentSimpleViewModel?.PresentGraph(this, GlobalHighlight.Clone(), Individuals, IndividualManagerViewModel);
 		}
 
 		/// <summary>
@@ -225,9 +226,9 @@ namespace Genealogy.ViewModel {
 			if (args) {
 				//They have accepted  the graph request. 
 				int relatives = args.ViewModel.ShowRelatives ? args.ViewModel.RelationCount : 0;
-				IEnumerable<Individual> individuals = SelectedIndividual.Wrapped.FamilyTree(relatives);
+				var individuals = SelectedIndividual.Wrapped.FamilyTree(relatives).ToViewModel(IndividualManagerViewModel);
 				//preserve global configuration
-				PresentDisplayGraph?.Present(this, GlobalHighlight, individuals);
+				PresentSimpleViewModel?.PresentGraph(this, GlobalHighlight, individuals, IndividualManagerViewModel);
 			}
 		}
 
@@ -235,11 +236,9 @@ namespace Genealogy.ViewModel {
 		/// View->Model logic to graph a "possible" negative
 		/// </summary>
 		private void GraphComputePossibleNegative() {
-			//Need to make the number a option
-			//Oh hey numieric
-			var except = AttributeHighlighting.PossiblePositive(GlobalHighlight.ToHighlight.Select(i => i.Wrapped), 5);
-			var individuals = individualManager.AllIndividuals.Except(except);
-			PresentDisplayGraph?.Present(this, GlobalHighlight, individuals);
+			var except = AttributeHighlighting.PossiblePositive(GlobalHighlight.ToHighlight.Select(i => i.Wrapped), 5).ToViewModel(IndividualManagerViewModel);
+			var individuals = IndividualManagerViewModel.Individuals.Except(except);
+			PresentSimpleViewModel?.PresentGraph(this, GlobalHighlight, individuals, IndividualManagerViewModel);
 		}
 
 		/// <summary>
@@ -247,9 +246,9 @@ namespace Genealogy.ViewModel {
 		/// </summary>
 		private void GraphComputeTrueNegative() {
 			//Generate except
-			var except = AttributeHighlighting.PossiblePositive(GlobalHighlight.ToHighlight.Select(i => i.Wrapped));
-			var individuals = individualManager.AllIndividuals.Except(except);
-			PresentDisplayGraph?.Present(this, GlobalHighlight, individuals);
+			var except = AttributeHighlighting.PossiblePositive(GlobalHighlight.ToHighlight.Select(i => i.Wrapped)).ToViewModel(IndividualManagerViewModel);
+			var individuals = IndividualManagerViewModel.Individuals.Except(except);
+			PresentSimpleViewModel?.PresentGraph(this, GlobalHighlight, individuals, IndividualManagerViewModel);
 		}
 
 		/// <summary>
@@ -262,8 +261,8 @@ namespace Genealogy.ViewModel {
 			var individuals = AttributeHighlighting.HighlightAny(GlobalHighlight.ToHighlight.Select(i => i.Wrapped),
 							viewModel.ShowChildren,
 							viewModel.LimitAncestors ? viewModel.AncestorCount : -1,
-							viewModel.ShowRelatives ? viewModel.RelationCount : 0);
-			PresentDisplayGraph?.Present(this, GlobalHighlight, individuals);
+							viewModel.ShowRelatives ? viewModel.RelationCount : -1).ToViewModel(IndividualManagerViewModel);
+			PresentSimpleViewModel?.PresentGraph(this, GlobalHighlight, individuals, IndividualManagerViewModel);
 		}
 
 		#endregion

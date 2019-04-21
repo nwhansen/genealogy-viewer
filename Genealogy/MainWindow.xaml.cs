@@ -34,7 +34,6 @@ namespace Genealogy {
 		public MainWindow(MainViewModel model) {
 			InitializeComponent();
 			DataContext = _viewModel = model;
-			model.PresentDisplayGraph += DisplayGraph;
 			model.PresentOpenFile += OpenFileDialog;
 			model.PresentPrompt += PresentPrompt;
 			model.PresentSimpleViewModel += PresentSimpleViewModel;
@@ -52,9 +51,10 @@ namespace Genealogy {
 				case PresentViewModelEventArgs<PopulationConfigurationViewModel> vm:
 					window = new GlobalPopulationConfiguration { DataContext = vm.ViewModel };
 					break;
-				default:
-					//DO NOTHING!
-					return;
+				case PresentViewModelEventArgs<GraphViewModel> vm:
+					window = new EnhancedGraphDisplay() { DataContext = vm.ViewModel };
+					break;
+				default: return; //Do nothing with the event we don't understand
 			}
 			if (e.Blocking) {
 				e.InteractionState = ViewModelInteractionState.Presented;
@@ -94,18 +94,6 @@ namespace Genealogy {
 						e.InteractionState = ViewModelInteractionState.Rejected;
 						break;
 				}
-			}
-		}
-
-		private void DisplayGraph(object sender, PresentViewModelEventArgs<GraphViewModel> e) {
-			//Generate the UI - Eventually wrap in WPF
-			var graphUI = new GraphDisplay(e.ViewModel.Individuals, e.ViewModel.HighlightConfiguration, true);
-			if (e.Blocking) {
-				var result = graphUI.ShowDialog();
-				e.InteractionState = ConvertToInteractionState(result);
-			} else {
-				graphUI.Show();
-				e.InteractionState = ViewModelInteractionState.Presented;
 			}
 		}
 

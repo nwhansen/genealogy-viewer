@@ -51,7 +51,6 @@ namespace Genealogy.ViewModel {
 			ColorName = colorName;
 		}
 
-
 		public int CompareTo(ColorsViewModel other) {
 			Color otherColor = other.Wrapped;
 			Color color = Wrapped;
@@ -65,6 +64,14 @@ namespace Genealogy.ViewModel {
 				return color.G.CompareTo(otherColor.G);
 			}
 			return color.B.CompareTo(otherColor.B);
+		}
+
+		/// <summary>
+		/// Unwraps this for easy usage
+		/// </summary>
+		/// <param name="view"></param>
+		public static implicit operator Color(ColorsViewModel view) {
+			return view.Wrapped;
 		}
 
 		#region Generate the View Model Collection

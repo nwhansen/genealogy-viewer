@@ -28,6 +28,7 @@ namespace Genealogy.ViewModel.Configuration {
 		private ColorsViewModel _directChildrenColor;
 		private IndividualAttributeViewModel selectedRemaining;
 		private IndividualAttributeViewModel selectedToHighlight;
+		private readonly IndividualAttributesFactoryViewModel attributeFactory;
 		private readonly Action _canAddChanged;
 		private readonly Action _canRemoveChanged;
 
@@ -214,17 +215,26 @@ namespace Genealogy.ViewModel.Configuration {
 		#endregion
 
 		/// <summary>
+		/// Creates the highlight configuration view model with a new wrapped utilizing the attribute factory
+		/// </summary>
+		/// <param name="attributeFactory">The attribute factory to use</param>
+		public HighlightConfigurationViewModel(IndividualAttributesFactoryViewModel attributeFactory) : this(new HighlightConfiguration(attributeFactory.Wrapped), attributeFactory) {
+
+		}
+
+		/// <summary>
 		/// Creates a Highlight Configuration view model wrapping a given configuration
 		/// </summary>
 		/// <param name="wrapped">The configuration this view model should wrapp</param>
-		public HighlightConfigurationViewModel(HighlightConfiguration wrapped) {
+		public HighlightConfigurationViewModel(HighlightConfiguration wrapped, IndividualAttributesFactoryViewModel attributeFactory) {
+			this.attributeFactory = attributeFactory;
 			//Build the view model - Figure out the color mapping
 			HashSet<IndividualAttribute> highlighted = new HashSet<IndividualAttribute>(wrapped.ToHighlight);
-			foreach (IndividualAttribute attr in wrapped.AttributesFactory.AllAttributes) {
-				if (highlighted.Contains(attr))
-					ToHighlight.Add(new IndividualAttributeViewModel(attr));
+			foreach (var attr in attributeFactory.AllAttributes) {
+				if (highlighted.Contains(attr.Wrapped))
+					ToHighlight.Add(attr);
 				else
-					Remaining.Add(new IndividualAttributeViewModel(attr));
+					Remaining.Add(attr);
 			}
 			Wrapped = wrapped;
 			//Set the color properties from the list
@@ -253,34 +263,36 @@ namespace Genealogy.ViewModel.Configuration {
 			}
 			CopyColorConfiguration(configuration);
 			//Copied the configuration
-			return new HighlightConfigurationViewModel(configuration);
-		}
-		/// <summary>
-		/// Clones this configuration exactly
-		/// </summary>
-		/// <returns>The cloned configuration not wrapped</returns>
-		public HighlightConfiguration CloneConfiguration() {
-			var configuration = new HighlightConfiguration(Wrapped.AttributesFactory);
-			foreach (var highlight in ToHighlight) {
-				configuration.AddHightlight(highlight.Wrapped);
-			}
-			CopyColorConfiguration(configuration);
-			//Copied the configuration
-			return configuration;
+			return new HighlightConfigurationViewModel(configuration, attributeFactory);
 		}
 
 		/// <summary>
 		/// Clones the Color Configuration and assigns it a new Attributes Factory, used when opening a new file (new attributes, but same coloring settings)
 		/// </summary>
-		/// <param name="attributesFactory">The new attributes factory to be used to get attributes</param>
+		/// <param name="attributeFactory">The new attributes factory to be used to get attributes</param>
 		/// <returns>The Configuration View Model that has only retained the color mapping</returns>
-		public HighlightConfigurationViewModel Clone(IndividualAttributesFactory attributesFactory) {
-			var configuration = new HighlightConfiguration(attributesFactory);
+		public HighlightConfigurationViewModel Clone(IndividualAttributesFactoryViewModel attributeFactory) {
+			var configuration = new HighlightConfiguration(attributeFactory.Wrapped);
 			CopyColorConfiguration(configuration);
-			return new HighlightConfigurationViewModel(configuration);
+			return new HighlightConfigurationViewModel(configuration, attributeFactory);
 		}
 
+		/// <summary>
+		/// If the individual is highlighted
+		/// </summary>
+		/// <param name="individualViewModel">The Individual View Mode should be highlighted</param>
+		/// <returns>If the individual VM should be highlighted</returns>
+		public bool ShouldHighlightIndividual(IndividualViewModel individualViewModel) {
+			return Wrapped.IsHighlightIndividual(individualViewModel.Wrapped);
+		}
 
+		/// <summary>
+		/// Adds a attribute to be highlighted
+		/// </summary>
+		/// <param name="attribute">The attribute to be highlighted</param>
+		public void AddHighlight(IndividualAttributeViewModel attribute) {
+			MoveAttributes(attribute, true);
+		}
 
 		#region Private Methods
 
@@ -297,13 +309,13 @@ namespace Genealogy.ViewModel.Configuration {
 		}
 		private void AddSelected() {
 			//make a local copy
-			MoveAttributes(SelectedRemaining, Remaining, ToHighlight, true);
+			MoveAttributes(SelectedRemaining, true);
 
 			_canRemoveChanged?.Invoke();
 		}
 
 		private void RemoveSelected() {
-			MoveAttributes(SelectedToHighlight, ToHighlight, Remaining, false);
+			MoveAttributes(SelectedToHighlight, false);
 			_canRemoveChanged?.Invoke();
 			_canAddChanged?.Invoke();
 		}
@@ -312,7 +324,9 @@ namespace Genealogy.ViewModel.Configuration {
 			return AllColors.Where(i => i.Wrapped == individualColor).First();
 		}
 
-		private void MoveAttributes(IndividualAttributeViewModel toMove, ObservableCollection<IndividualAttributeViewModel> from, ObservableCollection<IndividualAttributeViewModel> to, bool add) {
+		private void MoveAttributes(IndividualAttributeViewModel toMove, bool add) {
+			var from = add ? Remaining : ToHighlight;
+			var to = add ? ToHighlight : Remaining;
 			if (from.Remove(toMove)) {
 				to.Add(toMove);
 				if (add) {

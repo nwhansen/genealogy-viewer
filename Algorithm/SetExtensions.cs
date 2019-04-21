@@ -5,6 +5,9 @@ using System.Text;
 using Genealogy.Model;
 
 namespace Algorithm {
+	/// <summary>
+	/// Extensions to the "set" category of classes that are of questionable quality
+	/// </summary>
 	public static class SetExtensions {
 
 		/// <summary>
@@ -42,23 +45,5 @@ namespace Algorithm {
 			return collections.Any(i => i.Contains(individual));
 		}
 
-		/// <summary>
-		/// Because i like to reduce somethings with "eh" foreach loops. It also means we don't abuse select
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="enumeration"></param>
-		/// <param name="action"></param>
-		internal static void ForEach<T>(this IEnumerable<T> enumeration, Action<T> action) {
-			foreach (var item in enumeration) {
-				action(item);
-			}
-		}
-
-		internal static IEnumerable<T> ForEachAnd<T>(this IEnumerable<T> enumeration, Action<T> action) {
-			foreach (var item in enumeration) {
-				action(item);
-				yield return item;
-			}
-		}
 	}
 }

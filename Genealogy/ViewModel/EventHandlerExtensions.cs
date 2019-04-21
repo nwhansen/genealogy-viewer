@@ -71,24 +71,19 @@ namespace Genealogy.ViewModel {
 		/// <param name="presenter">the handler</param>
 		/// <param name="self">the object sending the event</param>
 		/// <param name="hgvm">The highlight configuration vm</param>
-		/// <param name="individuals">The model level individuals</param>
-		public static void Present(this EventHandler<PresentViewModelEventArgs<GraphViewModel>> presenter, object self, HighlightConfigurationViewModel hgvm, IEnumerable<Individual> individuals) {
-			var vm = new GraphViewModel(hgvm.CloneConfiguration(), individuals);
+		/// <param name="individuals">The view model level individuals</param>
+		public static void PresentGraph(this EventHandler<PresentEventArgs> presenter, object self,
+			HighlightConfigurationViewModel hgvm, IEnumerable<IndividualViewModel> individuals, IndividualManagerViewModel ivm) {
+			var vm = new GraphViewModel(hgvm, individuals, ivm);
 			var args = new PresentViewModelEventArgs<GraphViewModel>(vm, false);
 			presenter?.Invoke(self, args);
 		}
 
-		/// <summary>
-		/// Presents a graph view Model to the view, returning the arguments
-		/// </summary>
-		/// <param name="presenter">the handler</param>
-		/// <param name="self">the object sending the event</param>
-		/// <param name="hgvm">The highlight configuration vm</param>
-		/// <param name="individuals">The view model level individuals</param>
-		public static void Present(this EventHandler<PresentViewModelEventArgs<GraphViewModel>> presenter, object self, HighlightConfigurationViewModel hgvm, IEnumerable<IndividualViewModel> individuals) {
-			var vm = new GraphViewModel(hgvm, individuals);
-			var args = new PresentViewModelEventArgs<GraphViewModel>(vm, false);
+		public static ViewModelInteractionState Present(this EventHandler<ConfirmationViewModelEventArgs> presenter, object self, string message, string caption, ConfirmationViewModelEventArgs.ConfirmationType confirmation) {
+			var args = new ConfirmationViewModelEventArgs(message, caption, confirmation);
 			presenter?.Invoke(self, args);
+			return args.InteractionState;
 		}
+
 	}
 }

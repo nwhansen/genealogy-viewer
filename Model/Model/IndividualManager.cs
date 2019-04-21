@@ -13,6 +13,8 @@ namespace Genealogy.Model {
 		private Dictionary<string, Individual> _individuals = new Dictionary<string, Individual>();
 
 		private ISet<Individual> _founders = new HashSet<Individual>();
+		private List<IndividualAttribute> defaultHighlighted = new List<IndividualAttribute>();
+
 		/// <summary>
 		/// All individuals being managed
 		/// </summary>
@@ -28,6 +30,7 @@ namespace Genealogy.Model {
 		/// </summary>
 		public IndividualAttributesFactory AttributesFactory { get; } = new IndividualAttributesFactory();
 
+		public IEnumerable<IndividualAttribute> DefaultHighlighted => defaultHighlighted;
 
 		/// <summary>
 		/// The Custom Display Format
@@ -42,8 +45,11 @@ namespace Genealogy.Model {
 		/// %DeathDate = The Individuals DeathDate (in local date format) - Blank if not known
 		/// </remarks>
 		public string CustomDisplayFormat { get; set; } = "%DisplayCode";
-		public bool EnableCustomFormat { get; set; }
 
+		/// <summary>
+		/// If we should display the custom format
+		/// </summary>
+		public bool EnableCustomFormat { get; set; }
 
 		/// <summary>
 		/// Creates an individual manager
@@ -100,6 +106,12 @@ namespace Genealogy.Model {
 			}
 			target.ParentChanged += IndividualParentChanged;
 			return target;
+		}
+
+		public void AddDefaultHighlighted(IndividualAttribute attribute) {
+			if (AttributesFactory.Contains(attribute)) {
+				defaultHighlighted.Add(attribute);
+			}
 		}
 
 		private void IndividualParentChanged(object sender, ParentChangedEventArgs e) {
