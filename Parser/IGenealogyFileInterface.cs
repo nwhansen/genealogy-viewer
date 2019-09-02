@@ -18,5 +18,10 @@ namespace Genealogy {
 		/// <returns>The population at that given file</returns>
 		IndividualManager ParseFile(string filename);
 
+		/// <summary>
+		/// Where in the file we have errored
+		/// </summary>
+		string Position { get; }
+
 	}
 }

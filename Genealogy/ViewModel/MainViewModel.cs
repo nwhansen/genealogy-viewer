@@ -178,7 +178,7 @@ namespace Genealogy.ViewModel {
 				try {
 					IndividualManagerViewModel = new IndividualManagerViewModel(fileInterface.ParseFile(viewModel.Path));
 				} catch (Exception e) {
-					PresentPrompt?.Present(this, e.Message, "Unable to read file", ConfirmationViewModelEventArgs.ConfirmationType.Ok);
+					PresentPrompt?.Present(this, e.Message, String.Format("Unable to read file at {0}", fileInterface.Position), ConfirmationViewModelEventArgs.ConfirmationType.Ok);
 				}
 				//Clone the colors but not the attributes
 				GlobalHighlight = globalHighlight.Clone(IndividualManagerViewModel.AttributeFactory);

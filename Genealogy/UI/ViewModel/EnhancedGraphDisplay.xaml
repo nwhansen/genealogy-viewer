@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Genealogy.UI.ViewModel"
+             xmlns:hack="clr-namespace:AirspaceFixer;assembly=AirspaceFixer"
              mc:Ignorable="d" 
              Loaded="InjectLoader"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -11,63 +11,70 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
     </Window.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition  />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="1*" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Grid x:Name="GridHost"></Grid>
-        <Grid Grid.Column="1" DataContext="{Binding SelectedIndividual}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition MaxHeight="150" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition MinHeight="150" />
-            </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal">
-                <Label>Individual</Label>
-                <Label Width="120" Content="{Binding Path=DisplayCode}" />
-            </StackPanel>
-            <StackPanel Grid.Row="1" Orientation="Horizontal">
-                <Label>Father:</Label>
-                <Label Width="120" Content="{Binding Path=Father.DisplayCode}"></Label>
-            </StackPanel>
-            <StackPanel Grid.Row="2" Orientation="Horizontal">
-                <Label>Mother:</Label>
-                <Label Width="120" Content="{Binding Path=Mother.DisplayCode}"></Label></StackPanel>
-            <StackPanel Grid.Row="3" Orientation="Horizontal" >
-                <Label >Attributes</Label>
-            </StackPanel>
-            <ListBox Grid.Row="4" ItemsSource="{Binding Attributes}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Content="{Binding AttributeCode}" />
-                            <Label Grid.Column="1" Content="{Binding AttributeName}" />
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <StackPanel Grid.Row="5">
-                <Label>Children:</Label>
-            </StackPanel>
-            <ListBox Grid.Row="6" ItemsSource="{Binding Children}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Label Content="{Binding Display}" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Grid>
-        <Grid Grid.ColumnSpan="2" Panel.ZIndex="99" Visibility="{Binding IsGraphing, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}" >
+        <hack:AirspacePanel x:Name="Airspace" />
+        <Border Grid.Column="1" x:Name="Details" Width="200" BorderBrush="Gray" BorderThickness="3,0,0,0"  >
+            <Grid DataContext="{Binding SelectedIndividual}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition MaxHeight="150" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition MinHeight="150" />
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Label>Individual</Label>
+                    <Label Width="120" Content="{Binding Path=DisplayCode}" />
+                </StackPanel>
+                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                    <Label>Father:</Label>
+                    <Label Width="120" Content="{Binding Path=Father.DisplayCode}"></Label>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Orientation="Horizontal">
+                    <Label>Mother:</Label>
+                    <Label Width="120" Content="{Binding Path=Mother.DisplayCode}"></Label>
+                </StackPanel>
+                <StackPanel Grid.Row="3" Orientation="Horizontal" >
+                    <Label >Attributes</Label>
+                </StackPanel>
+                <ListBox Grid.Row="4" ItemsSource="{Binding Attributes}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Content="{Binding AttributeCode}" />
+                                <Label Grid.Column="1" Content="{Binding AttributeName}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <StackPanel Grid.Row="5">
+                    <Label>Children:</Label>
+                </StackPanel>
+                <ListBox Grid.Row="6" ItemsSource="{Binding Children}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding Display}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+        <Grid Grid.ColumnSpan="2" Grid.RowSpan="2" Panel.ZIndex="99" Visibility="{Binding IsGraphing, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}" >
             <Grid.Background>
-                <SolidColorBrush Color="SlateGray" Opacity="0.5" />
+                <SolidColorBrush Color="SlateGray" Opacity="1" />
             </Grid.Background>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*" />
@@ -83,5 +90,6 @@
             <ProgressBar IsIndeterminate="True" Grid.Column="1" Grid.Row="1" x:Name="GraphingProgress"/>
             <Button IsCancel="True" Grid.Column="2" Grid.Row="1"  Click="CancelLoading" >Cancel</Button>
         </Grid>
+        <Button VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="1" Grid.ColumnSpan="2" Click="ToggleDetail">Collapse</Button>
     </Grid>
 </Window>

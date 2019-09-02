@@ -83,7 +83,7 @@ namespace Genealogy.Model {
 				_individuals.Add(displayCode, target);
 				target.DisplayCodeChanged += IndividualDisplayCodeChanged;
 			} else if (target.IsFemale != isFemale) {
-				throw new InvalidOperationException(string.Format("Individual was found to be a {0} by earlier relationships. Cannot assign to {1}", GetSexString(target.IsFemale), GetSexString(isFemale)));
+				throw new InvalidOperationException(string.Format("Individual {0} was found to be a {1} by earlier relationships. Cannot assign to {2}", target.DisplayCode, GetSexString(target.IsFemale), GetSexString(isFemale)));
 			}
 			//Don't process father if it wasn't provided
 			if (!string.IsNullOrEmpty(fatherCode) && (target.Father == null || target.Father.DisplayCode != fatherCode)) {

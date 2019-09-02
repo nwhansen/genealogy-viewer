@@ -37,7 +37,7 @@ namespace Genealogy.Implementations {
 		private ParsingState parseState;
 
 		protected struct IndividualParseState {
-			public readonly static IndividualParseState Default = new IndividualParseState(3, 2, -1, -1, 1, 4);
+			public static readonly IndividualParseState Default = new IndividualParseState(3, 2, -1, -1, 1, 4);
 
 			public int DeathDateIndex { get; }
 			public int BirthDateIndex { get; }
@@ -58,7 +58,7 @@ namespace Genealogy.Implementations {
 
 		protected struct AttributeParseState {
 
-			public readonly static AttributeParseState Default = new AttributeParseState(-1);
+			public static readonly AttributeParseState Default = new AttributeParseState(-1);
 			public int DefaultIndex { get; }
 
 			public AttributeParseState(int defaultIndex) {
@@ -71,7 +71,11 @@ namespace Genealogy.Implementations {
 
 		protected int LineCount { get; private set; }
 
-
+		public string Position {
+			get {
+				return String.Format("Line {0}", LineCount);
+			}
+		}
 
 		public IndividualManager ParseFile(string filename) {
 			IndividualManager manager = new IndividualManager();

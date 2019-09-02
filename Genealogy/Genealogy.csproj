@@ -26,7 +26,7 @@
     <InstallUrl>https://raw.github.com/nwhansen/genealogy-viewer-deploy/master/</InstallUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -73,6 +73,9 @@
     <ApplicationIcon>Resources\Graph256.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AirspaceFixer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AirspaceFixer.1.0.5\lib\AirspaceFixer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Msagl, Version=3.0.0.0, Culture=neutral, PublicKeyToken=640c57aa40e7ae7d, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Msagl.1.1.1\lib\net40\Microsoft.Msagl.dll</HintPath>
     </Reference>
