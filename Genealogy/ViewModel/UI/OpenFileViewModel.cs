@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
+using System.ComponentModel;
 
 namespace Genealogy.ViewModel.UI {
 	public class OpenFileViewModel : INotifyPropertyChanged {

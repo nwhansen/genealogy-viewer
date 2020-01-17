@@ -1,17 +1,11 @@
-﻿using Algorithm;
-using Genealogy.Model;
-using Microsoft.Msagl.Drawing;
-using Microsoft.Msagl.GraphViewerGdi;
-using Microsoft.VisualBasic.FileIO;
-using Genealogy;
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Genealogy.Implementations;
+
+using Genealogy.Model;
 using Genealogy.ViewModel;
 
 namespace Genealogy {

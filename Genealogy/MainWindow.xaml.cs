@@ -1,19 +1,17 @@
-﻿using Algorithm;
-using Genealogy.Model;
-using Genealogy.UI;
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
+
 using Genealogy.UI.ViewModel;
 using Genealogy.UIInteraction;
 using Genealogy.ViewModel;
 using Genealogy.ViewModel.Configuration;
 using Genealogy.ViewModel.UI;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
 
 namespace Genealogy {
 	/// <summary>
@@ -42,7 +40,7 @@ namespace Genealogy {
 		private void PresentSimpleViewModel(object sender, PresentEventArgs e) {
 			Window window;
 			switch (e) {
-				case PresentViewModelEventArgs<HighlightConfigurationViewModel> vm:
+				case PresentViewModelEventArgs<ColorConfigurationViewModel> vm:
 					window = new HighlightConfiguration { DataContext = vm.ViewModel };
 					break;
 				case PresentViewModelEventArgs<GraphTreeConfigurationViewModel> vm:
@@ -53,6 +51,9 @@ namespace Genealogy {
 					break;
 				case PresentViewModelEventArgs<GraphViewModel> vm:
 					window = new EnhancedGraphDisplay() { DataContext = vm.ViewModel };
+					break;
+				case PresentViewModelEventArgs<HighlightAttributeConfigurationViewModel> vm:
+					window = new HighlightedAttributeConfiguration { DataContext = vm.ViewModel };
 					break;
 				default: return; //Do nothing with the event we don't understand
 			}

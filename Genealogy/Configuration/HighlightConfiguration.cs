@@ -1,63 +1,17 @@
-﻿using System;
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Msagl.Drawing;
-using System.Text;
+
 using Genealogy.Model;
 
 namespace Genealogy.Configuration {
-	/// <summary>
-	/// How Highlighting of Individuals is handled
-	/// </summary>
-	public class HighlightConfiguration {
+	///<summary>
+	/// A class to store what attributes are highlighted
+	///</summary>
+	public sealed class HighlightConfiguration {
 
 		private readonly ISet<IndividualAttribute> toHighlight = new HashSet<IndividualAttribute>();
-
-
-		#region Properties
-
-		#region Colors
-		/// <summary>
-		/// Color for a founder
-		/// </summary>
-		public Color FounderColor { get; set; } = Color.IndianRed;
-		/// <summary>
-		/// Color for a founder that has an attribute
-		/// </summary>
-		public Color FounderHighlightColor { get; set; } = Color.HotPink;
-		/// <summary>
-		/// The color for an individual
-		/// </summary>
-		public Color IndividualColor { get; set; } = Color.Beige;
-		/// <summary>
-		/// The color of an parent of the selected individual
-		/// </summary>
-		public Color SelectedParentColor { get; set; } = Color.Yellow;
-		/// <summary>
-		/// Color for when an individual has an attribute
-		/// </summary>
-		public Color IndividualHighlightColor { get; set; } = Color.YellowGreen;
-		/// <summary>
-		/// Color for a parent of an individual with an attribute
-		/// </summary>
-		public Color ParentIndividualHightlightColor { get; set; } = Color.Cyan;
-
-		//Colors for interest moments
-
-		/// <summary>
-		/// When a founder is interesting (such as the nearest founder)
-		/// </summary>
-		public Color InterestedFounderColor { get; set; } = Color.HotPink;
-		/// <summary>
-		/// When an individual is interesting (such as the at the same level as an individual founder)
-		/// </summary>
-		public Color InterestedIndividualColor { get; set; } = Color.Lavender;
-		/// <summary>
-		/// The color for the selected individuals direct children
-		/// </summary>
-		public Color DirectChildrenColor { get; set; } = Color.Orange;
-
-		#endregion
 
 		/// <summary>
 		/// The attributes factory for all attribute
@@ -73,8 +27,6 @@ namespace Genealogy.Configuration {
 		/// If all attributes are required to be highlighted
 		/// </summary>
 		public bool AllAttributesRequired { get; set; }
-
-		#endregion
 
 		#region Public Methods
 
@@ -126,5 +78,6 @@ namespace Genealogy.Configuration {
 		public HighlightConfiguration(IndividualAttributesFactory attributesFactory) {
 			AttributesFactory = attributesFactory;
 		}
+
 	}
 }

@@ -1,15 +1,18 @@
-﻿using System;
-using System.Linq;
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
+
 using Genealogy.UI.Logic;
 using Genealogy.ViewModel;
 using Genealogy.ViewModel.UI;
+
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.GraphViewerGdi;
-using static Genealogy.UI.Logic.GraphAssembler;
 
 namespace Genealogy.UI.ViewModel {
 	/// <summary>
@@ -32,7 +35,7 @@ namespace Genealogy.UI.ViewModel {
 		}
 
 		private async void InjectLoader(object sender, RoutedEventArgs e) {
-			assigner = new ColorAssigner(ViewModel.HighlightConfiguration, ViewModel.IndividualManager);
+			assigner = new ColorAssigner(ViewModel.ColorConfiguration, ViewModel.HighlightAttributeConfiguration, ViewModel.IndividualManager);
 			// Create the interop host control.
 			System.Windows.Forms.Integration.WindowsFormsHost host =
 				new System.Windows.Forms.Integration.WindowsFormsHost();

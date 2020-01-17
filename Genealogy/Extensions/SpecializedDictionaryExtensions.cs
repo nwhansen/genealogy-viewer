@@ -1,7 +1,7 @@
-﻿using System;
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Genealogy.Extensions {
 	public static class SpecializedDictionaryExtensions {

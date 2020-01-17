@@ -1,10 +1,14 @@
-﻿using Algorithm;
-using Genealogy.Model;
-using Genealogy.UIInteraction;
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+
+using Algorithm;
+
+using Genealogy.Model;
 
 namespace Genealogy.ViewModel {
 	/// <summary>

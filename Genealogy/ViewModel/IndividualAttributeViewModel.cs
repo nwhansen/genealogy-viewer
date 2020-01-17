@@ -1,10 +1,9 @@
-﻿using Genealogy.Model;
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using Genealogy.Model;
 
 namespace Genealogy.ViewModel {
 	/// <summary>

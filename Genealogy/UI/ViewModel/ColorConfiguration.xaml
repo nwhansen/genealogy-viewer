@@ -1,0 +1,97 @@
+﻿<Window x:Class="Genealogy.UI.ViewModel.HighlightConfiguration"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             Title="Color Configuration"
+             xmlns:local="clr-namespace:Genealogy.UI" Height="200" Width="520"
+             WindowStyle="ToolWindow">
+    <Window.Resources>
+        <DataTemplate x:Key="DropDown">
+            <Grid Height="18" Width="90" Background="{Binding DisplayColor}">
+                <TextBlock Text="{Binding ColorName}" HorizontalAlignment="Center" />
+            </Grid>
+        </DataTemplate>
+        <Style x:Key="ColorConfig" TargetType="ComboBox">
+            <Setter Property="Width" Value="100"></Setter>
+        </Style>
+    </Window.Resources>
+    <DockPanel LastChildFill="True">
+        <TabControl>
+            <TabItem Header="Tree View Colors">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox ItemsSource="{Binding AllColors}" 
+                                  SelectedItem="{Binding FounderColor}" 
+                                  ItemTemplate="{StaticResource DropDown}" 
+                                  Style="{StaticResource ColorConfig}"></ComboBox>
+                        <Label>Founder</Label>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox ItemsSource="{Binding AllColors}" 
+                                  SelectedItem="{Binding FounderHighlightColor}" 
+                                  ItemTemplate="{StaticResource DropDown}" 
+                                  Style="{StaticResource ColorConfig}"></ComboBox>
+                        <Label>Founder With Attribute</Label>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox ItemsSource="{Binding AllColors}" 
+                                  SelectedItem="{Binding IndividualHighlightColor}" 
+                                  ItemTemplate="{StaticResource DropDown}" 
+                                  Style="{StaticResource ColorConfig}"></ComboBox>
+                        <Label>Individual with Attribute</Label>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox ItemsSource="{Binding AllColors}"
+                                  SelectedItem="{Binding ParentIndividualHightlightColor}"
+                                  ItemTemplate="{StaticResource DropDown}" 
+                                  Style="{StaticResource ColorConfig}"></ComboBox>
+                        <Label>Parent of Individual with Attribute</Label>
+                    </StackPanel>
+
+                    <!--
+                    Not currently allowed to change
+                        <StackPanel Orientation="Horizontal">
+                            <Label>Individual Color</Label>
+                            <ComboBox ItemsSource="{Binding AllColors}" SelectedItem="{Binding IndividualColor}" ItemTemplate="{StaticResource DropDown}" Style="{StaticResource ColorConfig}"></ComboBox>
+                        </StackPanel>
+                    -->
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Interested (Selected) Individual">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" >
+                        <ComboBox ItemsSource="{Binding AllColors}" 
+                                  SelectedItem="{Binding InterestedIndividualColor}"
+                                  ItemTemplate="{StaticResource DropDown}" 
+                                  Style="{StaticResource ColorConfig}"></ComboBox>
+                        <Label>Interested Individual</Label>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox ItemsSource="{Binding AllColors}"
+                                  SelectedItem="{Binding SelectedParentColor}"
+                                  ItemTemplate="{StaticResource DropDown}" 
+                                  Style="{StaticResource ColorConfig}"></ComboBox>
+                        <Label>Parent</Label>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox ItemsSource="{Binding AllColors}" 
+                                  SelectedItem="{Binding InterestedFounderColor}" 
+                                  ItemTemplate="{StaticResource DropDown}" 
+                                  Style="{StaticResource ColorConfig}"></ComboBox>
+                        <Label>Founder and Parent</Label>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox ItemsSource="{Binding AllColors}" 
+                                  SelectedItem="{Binding DirectChildrenColor}" 
+                                  ItemTemplate="{StaticResource DropDown}" 
+                                  Style="{StaticResource ColorConfig}"></ComboBox>
+                        <Label>Offspring</Label>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>

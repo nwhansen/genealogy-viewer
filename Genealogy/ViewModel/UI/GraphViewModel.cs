@@ -1,13 +1,10 @@
-﻿using System;
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Genealogy.Configuration;
-using Genealogy.Model;
+
 using Genealogy.ViewModel.Configuration;
-using Microsoft.Msagl.Drawing;
 
 namespace Genealogy.ViewModel.UI {
 	public class GraphViewModel : INotifyPropertyChanged {
@@ -40,14 +37,17 @@ namespace Genealogy.ViewModel.UI {
 			}
 		}
 
-		public HighlightConfigurationViewModel HighlightConfiguration { get; }
+		public ColorConfigurationViewModel ColorConfiguration { get; }
+
+		public HighlightAttributeConfigurationViewModel HighlightAttributeConfiguration { get; }
 
 		public IEnumerable<IndividualViewModel> Individuals { get; }
 
 		public IndividualManagerViewModel IndividualManager { get; }
 
-		public GraphViewModel(HighlightConfigurationViewModel highlightConfigurationViewModel, IEnumerable<IndividualViewModel> individualViewModels, IndividualManagerViewModel individualManager) {
-			HighlightConfiguration = highlightConfigurationViewModel;
+		public GraphViewModel(ColorConfigurationViewModel colorConfiguration, HighlightAttributeConfigurationViewModel highlightAttributeConfiguration, IEnumerable<IndividualViewModel> individualViewModels, IndividualManagerViewModel individualManager) {
+			HighlightAttributeConfiguration = highlightAttributeConfiguration;
+			ColorConfiguration = colorConfiguration;
 			Individuals = individualViewModels;
 			IndividualManager = individualManager;
 		}

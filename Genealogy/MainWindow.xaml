@@ -25,8 +25,9 @@
                 <MenuItem Header="True Negative" Command="{Binding ComputeTrueNegativeCommand}" />
             </MenuItem>
             <MenuItem Header="Configuration">
-                <MenuItem Header="Global Highlighting" Command="{Binding ConfigureGlobalHighlightCommand}" />
-                <MenuItem Header="Global Population Settings" Command="{Binding ConfigureGlobalPopulationSettingsCommand}" />
+                <MenuItem Header="Color Settings" Command="{Binding ConfigureColorCommand}" />
+                <MenuItem Header="Highlight Attribute Settings" Command="{Binding ConfigureHighlightCommand}" />
+                <MenuItem Header="Advanced Settings" Command="{Binding ConfigureGlobalPopulationSettingsCommand}" />
             </MenuItem>
         </Menu>
         <Grid DockPanel.Dock="Left" Margin="1">
@@ -65,9 +66,9 @@
                 <Button Command="{Binding GraphSelectedIndividualCommand}" Content="Graph Individual" />
             </StackPanel>
             <StackPanel Grid.Row="1" Orientation="Horizontal" DataContext="{Binding SelectedIndividual}">
-                <Label>Father:</Label>
+                <Label>Sire:</Label>
                 <Label Width="120" Content="{Binding Path=Father.DisplayCode}"></Label>
-                <Label>Mother:</Label>
+                <Label>Dam:</Label>
                 <Label Width="120" Content="{Binding Path=Mother.DisplayCode}"></Label>
             </StackPanel>
             <StackPanel Grid.Row="2" Orientation="Horizontal" DataContext="{Binding SelectedIndividual}">

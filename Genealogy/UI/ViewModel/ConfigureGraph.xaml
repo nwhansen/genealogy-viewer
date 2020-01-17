@@ -16,12 +16,12 @@
             <TextBlock Margin="10" HorizontalAlignment="Center">Configure what Individuals show up on the graph</TextBlock>
             <Border BorderBrush="LightGray" BorderThickness="0,1" Margin="8,0"/>
             <StackPanel Orientation="Horizontal" Visibility="{Binding CanLimitAncestors, Converter={StaticResource Converter}}">
-                <TextBlock Margin="5,0,3,0">Limit Ancestors Shown:</TextBlock>
+                <TextBlock Margin="5,0,3,0">Limit Ancestors Shown To:</TextBlock>
                 <CheckBox Margin="3,0" IsChecked="{Binding LimitAncestors}" VerticalAlignment="Center"></CheckBox>
                 <toolkit:IntegerUpDown Width="80" IsEnabled="{Binding LimitAncestors}" Minimum="{Binding Path=AncestorCount.Min}" Maximum="{Binding Path=AncestorCount.Max}" Value="{Binding Path=AncestorCount.Value}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Visibility="{Binding CanHideChildren, Converter={StaticResource Converter}}">
-                <TextBlock Margin="5,3,3,3">Show Children:</TextBlock>
+                <TextBlock Margin="5,3,3,3">Show Offspring:</TextBlock>
                 <CheckBox Margin="3,3" IsChecked="{Binding ShowChildren}" VerticalAlignment="Center"></CheckBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal">

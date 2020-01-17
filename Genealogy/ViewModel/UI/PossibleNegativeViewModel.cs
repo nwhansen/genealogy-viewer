@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
 namespace Genealogy.ViewModel.UI {
 	/// <summary>
 	/// Represents the View Model logic required for when 

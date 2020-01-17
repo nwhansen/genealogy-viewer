@@ -1,10 +1,10 @@
-﻿using System;
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Genealogy.Model;
+
 using Microsoft.VisualBasic.FileIO;
 
 namespace Genealogy.Implementations {

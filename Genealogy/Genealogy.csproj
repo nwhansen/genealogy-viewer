@@ -26,7 +26,7 @@
     <InstallUrl>https://raw.github.com/nwhansen/genealogy-viewer-deploy/master/</InstallUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -139,6 +139,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\ColorConfiguration.cs" />
     <Compile Include="Configuration\HighlightConfiguration.cs" />
     <Compile Include="Extensions\SpecializedDictionaryExtensions.cs" />
     <Compile Include="UIInteraction\CommandWrapper.cs" />
@@ -160,6 +161,10 @@
     <Compile Include="UI\ViewModel\ConfigureGraph.xaml.cs">
       <DependentUpon>ConfigureGraph.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\ViewModel\HighlightedAttributeConfiguration.xaml.cs">
+      <DependentUpon>HighlightedAttributeConfiguration.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\Configuration\HighlightAttributeConfigurationViewModel.cs" />
     <Compile Include="ViewModel\IndividualAttributesFactoryViewModel.cs" />
     <Compile Include="ViewModel\IEnumerableExtensions.cs" />
     <Compile Include="ViewModel\IndividualManagerViewModel.cs" />
@@ -169,11 +174,11 @@
     <Compile Include="ViewModel\UI\SingleNumericViewModel.cs" />
     <Compile Include="UIInteraction\PresentViewModelEventArgs.cs" />
     <Compile Include="UIInteraction\ViewModelInteractionState.cs" />
-    <Compile Include="UI\ViewModel\HighlightConfiguration.xaml.cs">
-      <DependentUpon>HighlightConfiguration.xaml</DependentUpon>
+    <Compile Include="UI\ViewModel\ColorConfiguration.xaml.cs">
+      <DependentUpon>ColorConfiguration.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\ColorsViewModel.cs" />
-    <Compile Include="ViewModel\Configuration\HighlightConfigurationViewModel.cs" />
+    <Compile Include="ViewModel\Configuration\ColorConfigurationViewModel.cs" />
     <Compile Include="ViewModel\UI\GraphViewModel.cs" />
     <Compile Include="ViewModel\IndividualAttributeViewModel.cs" />
     <Compile Include="ViewModel\IndividualViewModel.cs" />
@@ -218,7 +223,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\ViewModel\HighlightConfiguration.xaml">
+    <Page Include="UI\ViewModel\ColorConfiguration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ViewModel\HighlightedAttributeConfiguration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

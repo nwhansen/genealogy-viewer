@@ -1,11 +1,10 @@
-﻿using System;
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using Genealogy.Model;
+
 using Genealogy.UIInteraction;
 using Genealogy.ViewModel.Configuration;
 using Genealogy.ViewModel.UI;
@@ -70,11 +69,11 @@ namespace Genealogy.ViewModel {
 		/// </summary>
 		/// <param name="presenter">the handler</param>
 		/// <param name="self">the object sending the event</param>
-		/// <param name="hgvm">The highlight configuration vm</param>
+		/// <param name="ccVm">The highlight configuration vm</param>
 		/// <param name="individuals">The view model level individuals</param>
 		public static void PresentGraph(this EventHandler<PresentEventArgs> presenter, object self,
-			HighlightConfigurationViewModel hgvm, IEnumerable<IndividualViewModel> individuals, IndividualManagerViewModel ivm) {
-			var vm = new GraphViewModel(hgvm, individuals, ivm);
+			ColorConfigurationViewModel ccVm, HighlightAttributeConfigurationViewModel hacVM, IEnumerable<IndividualViewModel> individuals, IndividualManagerViewModel ivm) {
+			var vm = new GraphViewModel(ccVm, hacVM, individuals, ivm);
 			var args = new PresentViewModelEventArgs<GraphViewModel>(vm, false);
 			presenter?.Invoke(self, args);
 		}

@@ -1,4 +1,6 @@
-﻿using System;
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
 using System.ComponentModel;
 using System.Windows;
 

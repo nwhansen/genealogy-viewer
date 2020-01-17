@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+
 using Genealogy.Model;
 
 namespace Algorithm {

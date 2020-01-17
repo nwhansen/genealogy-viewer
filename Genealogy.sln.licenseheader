@@ -1,0 +1,9 @@
+﻿extensions: designer.cs generated.cs
+extensions: .cs .cpp .h
+//==============================================
+// Copyright (c) %creationyear% Nathan Hansen
+//==============================================
+extensions: .aspx .ascx
+<%-- 
+Copyright (c) %creationyear% Nathan Hansen
+--%>

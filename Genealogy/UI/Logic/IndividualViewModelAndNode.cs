@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
 using Genealogy.ViewModel;
+
 using Microsoft.Msagl.Drawing;
 
 namespace Genealogy.UI.Logic {

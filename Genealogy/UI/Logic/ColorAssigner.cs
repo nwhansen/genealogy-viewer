@@ -1,9 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
 using System.Linq;
-using System.Text;
+
 using Genealogy.ViewModel;
 using Genealogy.ViewModel.Configuration;
+
 using Microsoft.Msagl.Drawing;
 
 namespace Genealogy.UI.Logic {
@@ -14,11 +16,13 @@ namespace Genealogy.UI.Logic {
 	public class ColorAssigner {
 
 
-		private readonly HighlightConfigurationViewModel highlightConfiguration;
+		private readonly ColorConfigurationViewModel highlightConfiguration;
+		private readonly HighlightAttributeConfigurationViewModel highlightAttributeConfiguration;
 		private readonly IndividualManagerViewModel individualManager;
 
-		public ColorAssigner(HighlightConfigurationViewModel highlightConfiguration, IndividualManagerViewModel individualManager) {
+		public ColorAssigner(ColorConfigurationViewModel highlightConfiguration, HighlightAttributeConfigurationViewModel highlightAttributeConfiguration, IndividualManagerViewModel individualManager) {
 			this.highlightConfiguration = highlightConfiguration;
+			this.highlightAttributeConfiguration = highlightAttributeConfiguration;
 			this.individualManager = individualManager;
 		}
 
@@ -55,7 +59,7 @@ namespace Genealogy.UI.Logic {
 				return highlightConfiguration.InterestedIndividualColor;
 			}
 			bool isFounder = individual.IsFounder;
-			bool hasAttr = highlightConfiguration.ShouldHighlightIndividual(individual);
+			bool hasAttr = highlightAttributeConfiguration.ShouldHighlightIndividual(individual);
 			//Check if we are the parent of the individual
 			bool isParent = false;
 			if (selectedIndividual != null) {
@@ -73,7 +77,7 @@ namespace Genealogy.UI.Logic {
 				return highlightConfiguration.IndividualHighlightColor;
 			}
 			//Are we a parent of "interest"
-			if (individual.Children.Where(highlightConfiguration.ShouldHighlightIndividual).Any()) {
+			if (individual.Children.Where(highlightAttributeConfiguration.ShouldHighlightIndividual).Any()) {
 				return highlightConfiguration.ParentIndividualHightlightColor;
 			}
 			//Not considered "interesting"

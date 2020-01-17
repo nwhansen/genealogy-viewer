@@ -1,8 +1,12 @@
-﻿using Microsoft.Msagl.Drawing;
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+
+using Microsoft.Msagl.Drawing;
 
 namespace Genealogy.ViewModel {
 	/// <summary>

@@ -36,11 +36,11 @@
                     <Label Width="120" Content="{Binding Path=DisplayCode}" />
                 </StackPanel>
                 <StackPanel Grid.Row="1" Orientation="Horizontal">
-                    <Label>Father:</Label>
+                    <Label>Sire:</Label>
                     <Label Width="120" Content="{Binding Path=Father.DisplayCode}"></Label>
                 </StackPanel>
                 <StackPanel Grid.Row="2" Orientation="Horizontal">
-                    <Label>Mother:</Label>
+                    <Label>Dam:</Label>
                     <Label Width="120" Content="{Binding Path=Mother.DisplayCode}"></Label>
                 </StackPanel>
                 <StackPanel Grid.Row="3" Orientation="Horizontal" >
@@ -61,7 +61,7 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <StackPanel Grid.Row="5">
-                    <Label>Children:</Label>
+                    <Label>Offspring:</Label>
                 </StackPanel>
                 <ListBox Grid.Row="6" ItemsSource="{Binding Children}">
                     <ListBox.ItemTemplate>

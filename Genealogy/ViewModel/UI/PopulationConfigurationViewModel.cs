@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿//==============================================
+// Copyright (c) 2019 Nathan Hansen
+//==============================================
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
+
 using Genealogy.Model;
 using Genealogy.UIInteraction;
 
