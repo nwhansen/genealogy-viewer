@@ -60,21 +60,28 @@
                 <RowDefinition />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
                 <Label>Individual</Label>
                 <Label Width="120" Content="{Binding Path=SelectedIndividual.DisplayCode}" />
                 <Button Command="{Binding GraphSelectedIndividualCommand}" Content="Graph Individual" />
             </StackPanel>
-            <StackPanel Grid.Row="1" Orientation="Horizontal" DataContext="{Binding SelectedIndividual}">
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Grid.ColumnSpan="2" DataContext="{Binding SelectedIndividual}">
                 <Label>Sire:</Label>
                 <Label Width="120" Content="{Binding Path=Father.DisplayCode}"></Label>
                 <Label>Dam:</Label>
                 <Label Width="120" Content="{Binding Path=Mother.DisplayCode}"></Label>
             </StackPanel>
-            <StackPanel Grid.Row="2" Orientation="Horizontal" DataContext="{Binding SelectedIndividual}">
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Grid.Column="1" DataContext="{Binding SelectedIndividual}">
                 <Label >Attributes</Label>
             </StackPanel>
-            <ListBox Grid.Row="3" ItemsSource="{Binding Attributes}" DataContext="{Binding SelectedIndividual}">
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Grid.Column="0" DataContext="{Binding SelectedIndividual}">
+                <Label >Offspring</Label>
+            </StackPanel>
+            <ListBox Grid.Row="3" ItemsSource="{Binding Attributes}" Grid.Column="1" DataContext="{Binding SelectedIndividual}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -85,6 +92,13 @@
                             <Label Grid.Column="0" Content="{Binding AttributeCode}" />
                             <Label Grid.Column="1" Content="{Binding AttributeName}" />
                         </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <ListBox Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Children}" DataContext="{Binding SelectedIndividual}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Label Content="{Binding DisplayCode}" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

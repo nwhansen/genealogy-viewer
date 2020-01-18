@@ -26,7 +26,7 @@
     <InstallUrl>https://raw.github.com/nwhansen/genealogy-viewer-deploy/master/</InstallUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationRevision>4</ApplicationRevision>
     <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -168,6 +168,7 @@
     <Compile Include="ViewModel\IndividualAttributesFactoryViewModel.cs" />
     <Compile Include="ViewModel\IEnumerableExtensions.cs" />
     <Compile Include="ViewModel\IndividualManagerViewModel.cs" />
+    <Compile Include="ViewModel\UI\ColorLabelDescriptorsViewModel.cs" />
     <Compile Include="ViewModel\UI\GraphAttributeViewModel.cs" />
     <Compile Include="ViewModel\UI\PopulationConfigurationViewModel.cs" />
     <Compile Include="ViewModel\UI\PossibleNegativeViewModel.cs" />

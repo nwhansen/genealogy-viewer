@@ -89,6 +89,9 @@ namespace Genealogy.UI.ViewModel {
 				//Assign our selected view model. 
 				ViewModel.SelectedIndividual = node.Node.UserData as IndividualViewModel;
 				UpdateColors();
+			} else {
+				ViewModel.SelectedIndividual = null;
+				UpdateColors();
 			}
 		}
 
@@ -123,7 +126,15 @@ namespace Genealogy.UI.ViewModel {
 				ViewModel.IsGraphing = false;
 			} else if (e.Progress == LayoutProgress.Aborted) {
 				Dispatcher.BeginInvoke((Action)(() => Close()));
-			} else if (e.Progress == LayoutProgress.LayingOut || e.Progress == LayoutProgress.Rendering) {
+			} else if ((e.Progress == LayoutProgress.LayingOut || e.Progress == LayoutProgress.Rendering) && !viewModel.IsGraphing) {
+				//Fix airspace
+				Dispatcher.BeginInvoke((Action)(() => {
+					//If we are "re-fired" but the graph finished we don't 
+					// want to fix airspace again.
+					if (!Airspace.FixAirspace && ViewModel.IsGraphing) {
+						Airspace.FixAirspace = true;
+					}
+				}));
 				ViewModel.IsGraphing = true;
 			}
 		}

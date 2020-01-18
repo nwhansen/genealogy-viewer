@@ -1,10 +1,6 @@
 ﻿//==============================================
 // Copyright (c) 2019 Nathan Hansen
 //==============================================
-using System.Collections.Generic;
-
-using Genealogy.Model;
-
 using Microsoft.Msagl.Drawing;
 
 namespace Genealogy.Configuration {
@@ -12,9 +8,6 @@ namespace Genealogy.Configuration {
 	/// Stores the Color configuration for the graph
 	/// </summary>
 	public class ColorConfiguration {
-
-		private readonly ISet<IndividualAttribute> toHighlight = new HashSet<IndividualAttribute>();
-
 
 
 		#region Normal Colors
@@ -47,7 +40,7 @@ namespace Genealogy.Configuration {
 		/// <summary>
 		/// When an individual is interesting (such as the at the same level as an individual founder)
 		/// </summary>
-		public Color InterestedIndividualColor { get; set; } = Color.Lavender;
+		public Color InterestedIndividualColor { get; set; } = Color.DarkOrchid;
 
 		/// <summary>
 		/// The color of an parent of the selected individual
@@ -57,7 +50,7 @@ namespace Genealogy.Configuration {
 		/// <summary>
 		/// When a founder is interesting (such as the nearest founder)
 		/// </summary>
-		public Color InterestedFounderColor { get; set; } = Color.HotPink;
+		public Color InterestedFounderColor { get; set; } = Color.Navy;
 		/// <summary>
 		/// The color for the selected individuals direct children
 		/// </summary>

@@ -2,6 +2,7 @@
 // Copyright (c) 2019 Nathan Hansen
 //==============================================
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 using Genealogy.ViewModel.Configuration;
@@ -11,6 +12,8 @@ namespace Genealogy.ViewModel.UI {
 
 		private bool isGraphing;
 		private IndividualViewModel selectedIndividual;
+		private readonly ObservableCollection<ColorLabelDescriptorsViewModel> normalColorLabelDescriptors;
+		private readonly ObservableCollection<ColorLabelDescriptorsViewModel> selectedColorLabelDescriptors;
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -23,7 +26,14 @@ namespace Genealogy.ViewModel.UI {
 				if (value != selectedIndividual) {
 					selectedIndividual = value;
 					PropertyChanged.Notify(this, "SelectedIndividual");
+					PropertyChanged.Notify(this, "ColorLabelDescriptors");
 				}
+			}
+		}
+
+		public ObservableCollection<ColorLabelDescriptorsViewModel> ColorLabelDescriptors {
+			get {
+				return SelectedIndividual != null ? selectedColorLabelDescriptors : normalColorLabelDescriptors;
 			}
 		}
 
@@ -50,6 +60,18 @@ namespace Genealogy.ViewModel.UI {
 			ColorConfiguration = colorConfiguration;
 			Individuals = individualViewModels;
 			IndividualManager = individualManager;
+			normalColorLabelDescriptors = new ObservableCollection<ColorLabelDescriptorsViewModel> {
+				new ColorLabelDescriptorsViewModel { Color = ColorConfiguration.IndividualHighlightColor, Label = "Attribute" },
+				new ColorLabelDescriptorsViewModel { Color = ColorConfiguration.FounderColor, Label = "Founder" },
+				new ColorLabelDescriptorsViewModel { Color = ColorConfiguration.FounderHighlightColor, Label = "Founder w/ Attribute" },
+				new ColorLabelDescriptorsViewModel { Color = ColorConfiguration.ParentIndividualHightlightColor, Label = "Parent of Individual w/ Attribute" },
+			};
+			selectedColorLabelDescriptors = new ObservableCollection<ColorLabelDescriptorsViewModel> {
+				new ColorLabelDescriptorsViewModel { Color = ColorConfiguration.InterestedIndividualColor, Label = "Selected Individual" },
+				new ColorLabelDescriptorsViewModel { Color = ColorConfiguration.SelectedParentColor, Label = "Parent" },
+				new ColorLabelDescriptorsViewModel { Color = ColorConfiguration.InterestedFounderColor, Label = "Selected Parent & Founder" },
+				new ColorLabelDescriptorsViewModel { Color = ColorConfiguration.DirectChildrenColor, Label = "Offspring Color" },
+			};
 		}
 	}
 }

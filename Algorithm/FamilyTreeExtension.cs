@@ -34,7 +34,7 @@ namespace Algorithm {
 			if (returnSelf) {
 				yield return individual;
 			}
-			do {
+			while (toProcess.Count > 0) {
 				processing = toProcess.Dequeue();
 				individual = processing.Individual;
 				//There is a scenario where we can discover somebody via a non-direct descendant before
@@ -75,7 +75,7 @@ namespace Algorithm {
 						.Where(i => !returned.Has(i))
 						.ForEach(c => Enqueue(toProcess, processing, c, false, false));
 				}
-			} while (toProcess.Count > 0);
+			}
 		}
 
 		/// <summary>
