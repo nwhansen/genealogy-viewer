@@ -1,15 +1,14 @@
 ﻿//==============================================
 // Copyright (c) 2019 Nathan Hansen
 //==============================================
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Genealogy.Extensions;
-using Genealogy.Model;
 using Genealogy.ViewModel;
+
 using Microsoft.Msagl.Drawing;
 
 namespace Genealogy.UI.Logic {
@@ -67,7 +66,9 @@ namespace Genealogy.UI.Logic {
 					var edge = new Edge(node, child, ConnectionToGraph.Connected);
 					node.AddOutEdge(edge);
 				}
-				node.Attr.FillColor = assigner.GetFill(individual, null);
+				var color = assigner.GetFill(individual, null);
+				node.Attr.FillColor = color.Wrapped;
+				node.Label.FontColor = color.WrappedTextColor;
 				node.UserData = individual;
 				graph.AddNode(node);
 			}
