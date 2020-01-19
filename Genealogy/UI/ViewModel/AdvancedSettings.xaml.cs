@@ -7,8 +7,8 @@ namespace Genealogy.UI.ViewModel {
 	/// <summary>
 	/// A window to configure the global population display
 	/// </summary>
-	public partial class GlobalPopulationConfiguration : Window {
-		public GlobalPopulationConfiguration() {
+	public partial class AdvancedSettings : Window {
+		public AdvancedSettings() {
 			InitializeComponent();
 		}
 	}

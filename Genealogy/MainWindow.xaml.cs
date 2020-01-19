@@ -47,7 +47,7 @@ namespace Genealogy {
 					window = new ConfigureGraph { DataContext = vm.ViewModel };
 					break;
 				case PresentViewModelEventArgs<PopulationConfigurationViewModel> vm:
-					window = new GlobalPopulationConfiguration { DataContext = vm.ViewModel };
+					window = new AdvancedSettings { DataContext = vm.ViewModel };
 					break;
 				case PresentViewModelEventArgs<GraphViewModel> vm:
 					window = new EnhancedGraphDisplay() { DataContext = vm.ViewModel };
@@ -135,5 +135,9 @@ namespace Genealogy {
 			}
 		}
 
+		private void ShowAboutMenu(object sender, RoutedEventArgs e) {
+			var aboutDialog = new AboutDialog();
+			aboutDialog.ShowDialog();
+		}
 	}
 }

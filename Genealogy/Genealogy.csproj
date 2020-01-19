@@ -99,6 +99,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO, Version=2.6.8.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.1.1.8\lib\net40\System.IO.dll</HintPath>
@@ -139,6 +140,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutDialog.xaml.cs">
+      <DependentUpon>AboutDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Configuration\ColorConfiguration.cs" />
     <Compile Include="Configuration\HighlightConfiguration.cs" />
     <Compile Include="Extensions\SpecializedDictionaryExtensions.cs" />
@@ -155,8 +159,8 @@
     <Compile Include="UI\ViewModel\EnhancedGraphDisplay.xaml.cs">
       <DependentUpon>EnhancedGraphDisplay.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\ViewModel\GlobalPopulationConfiguration.xaml.cs">
-      <DependentUpon>GlobalPopulationConfiguration.xaml</DependentUpon>
+    <Compile Include="UI\ViewModel\AdvancedSettings.xaml.cs">
+      <DependentUpon>AdvancedSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\ViewModel\ConfigureGraph.xaml.cs">
       <DependentUpon>ConfigureGraph.xaml</DependentUpon>
@@ -208,6 +212,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AboutDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -216,7 +224,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\ViewModel\GlobalPopulationConfiguration.xaml">
+    <Page Include="UI\ViewModel\AdvancedSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

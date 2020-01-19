@@ -18,7 +18,8 @@ namespace Genealogy.ViewModel {
 		/// <summary>
 		/// The Attribute Long Name (description)
 		/// </summary>
-		public string AttributeName => Wrapped.AttributeName;
+		public string AttributeName =>
+			Wrapped.AttributeName == Wrapped.AttributeCode ? string.Empty : Wrapped.AttributeName;
 
 		/// <summary>
 		/// The Attribute Model which we are wrapping
@@ -35,6 +36,7 @@ namespace Genealogy.ViewModel {
 		/// <param name="wrapped">The Attribute to wrap</param>
 		public IndividualAttributeViewModel(IndividualAttribute wrapped) {
 			Wrapped = wrapped;
+
 		}
 
 	}

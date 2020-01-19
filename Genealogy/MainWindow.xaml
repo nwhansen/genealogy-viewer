@@ -29,6 +29,9 @@
                 <MenuItem Header="Highlight Attribute Settings" Command="{Binding ConfigureHighlightCommand}" />
                 <MenuItem Header="Advanced Settings" Command="{Binding ConfigureGlobalPopulationSettingsCommand}" />
             </MenuItem>
+            <MenuItem Header="About" Click="ShowAboutMenu">
+                
+            </MenuItem>
         </Menu>
         <Grid DockPanel.Dock="Left" Margin="1">
             <Grid.RowDefinitions>
