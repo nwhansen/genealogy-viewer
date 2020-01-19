@@ -53,12 +53,15 @@ namespace Genealogy.ViewModel.UI {
 
 		public IEnumerable<IndividualViewModel> Individuals { get; }
 
+		public string Title { get; }
+
 		public IndividualManagerViewModel IndividualManager { get; }
 
-		public GraphViewModel(ColorConfigurationViewModel colorConfiguration, HighlightAttributeConfigurationViewModel highlightAttributeConfiguration, IEnumerable<IndividualViewModel> individualViewModels, IndividualManagerViewModel individualManager) {
+		public GraphViewModel(ColorConfigurationViewModel colorConfiguration, HighlightAttributeConfigurationViewModel highlightAttributeConfiguration, IndividualManagerViewModel individualManager, IEnumerable<IndividualViewModel> individualViewModels, string title) {
 			HighlightAttributeConfiguration = highlightAttributeConfiguration;
 			ColorConfiguration = colorConfiguration;
 			Individuals = individualViewModels;
+			Title = title;
 			IndividualManager = individualManager;
 			normalColorLabelDescriptors = new ObservableCollection<ColorLabelDescriptorsViewModel> {
 				new ColorLabelDescriptorsViewModel { Color = ColorConfiguration.IndividualHighlightColor, Label = "Attribute" },

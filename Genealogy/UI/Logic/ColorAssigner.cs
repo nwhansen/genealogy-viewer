@@ -6,8 +6,6 @@ using System.Linq;
 using Genealogy.ViewModel;
 using Genealogy.ViewModel.Configuration;
 
-using Microsoft.Msagl.Drawing;
-
 namespace Genealogy.UI.Logic {
 
 	/// <summary>
@@ -31,15 +29,15 @@ namespace Genealogy.UI.Logic {
 		/// </summary>
 		/// <param name="individual"></param>
 		/// <returns></returns>
-		public Color GetFill(IndividualViewModel individual, IndividualViewModel selectedIndividual) {
+		public ColorsViewModel GetFill(IndividualViewModel individual, IndividualViewModel selectedIndividual) {
 			//Direct Children are always highlighted
 			if (selectedIndividual != null && selectedIndividual.Children.Where(i => i.Wrapped == individual.Wrapped).Any()) {
 				return highlightConfiguration.DirectChildrenColor;
 			}
 			//If we are interesting in some fashion generate a color, otherwise default to standard colors
 			var color = IsInterestingColor(individual, selectedIndividual);
-			if (color.HasValue) {
-				return color.Value;
+			if (color != null) {
+				return color;
 			}
 			if (individual.IsFounder) {
 				return highlightConfiguration.FounderColor;
@@ -54,7 +52,7 @@ namespace Genealogy.UI.Logic {
 		/// <param name="individual">The individual to highlight</param>
 		/// <param name="selectedIndividual">The selected individual</param>
 		/// <returns>If we are interesting</returns>
-		private Color? IsInterestingColor(IndividualViewModel individual, IndividualViewModel selectedIndividual) {
+		private ColorsViewModel IsInterestingColor(IndividualViewModel individual, IndividualViewModel selectedIndividual) {
 			if (individual == selectedIndividual) {
 				return highlightConfiguration.InterestedIndividualColor;
 			}

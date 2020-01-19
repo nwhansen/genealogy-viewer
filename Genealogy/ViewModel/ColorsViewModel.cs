@@ -7,6 +7,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 
 using Microsoft.Msagl.Drawing;
+//Used to help reduce name-space clashing visual clutter
+using WpfBrush = System.Windows.Media.SolidColorBrush;
+using WpfColor = System.Windows.Media.Color;
+using WpfColors = System.Windows.Media.Colors;
 
 namespace Genealogy.ViewModel {
 	/// <summary>
@@ -33,26 +37,43 @@ namespace Genealogy.ViewModel {
 		public Color Wrapped { get; private set; }
 
 		/// <summary>
+		/// The Color value we are wrapping
+		/// </summary>
+		public Color WrappedTextColor { get; private set; }
+		/// <summary>
 		/// The WPF supported Color
 		/// </summary>
-		public System.Windows.Media.SolidColorBrush DisplayColor { get; private set; }
+		public WpfBrush DisplayColor { get; private set; }
+
+		/// <summary>
+		/// The WPF supported text color
+		/// </summary>
+		public WpfBrush TextColor { get; private set; }
 
 		/// <summary>
 		/// A Color struct used to sort colors
 		/// </summary>
 		public HslColorStruct HslColor { get; }
 
+		/// <summary>
+		/// A human friendly color name
+		/// </summary>
 		public string ColorName { get; }
 
 		/// <summary>
 		/// Creates a color view model from a given color
 		/// </summary>
-		/// <param name="wrapped">The Color Model to wrap</param>
-		private ColorsViewModel(Color wrapped, string colorName) {
-			Wrapped = wrapped;
-			HslColor = RgbToHsl(wrapped);
-			DisplayColor = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(wrapped.G, wrapped.R, wrapped.G, wrapped.B));
+		/// <param name="color">The Color Model to wrap</param>
+		private ColorsViewModel(Color color, string colorName) {
+			Wrapped = color;
+			var (hslColor, rgbPercent) = RgbToHsl(color);
+			HslColor = hslColor;
+			DisplayColor = new WpfBrush(WpfColor.FromRgb(color.R, color.G, color.B));
 			ColorName = colorName;
+			//Compute "Text Color"
+			bool isWhiteText = ShouldUseWhite(rgbPercent);
+			TextColor = isWhiteText ? new WpfBrush(WpfColors.White) : new WpfBrush(WpfColors.Black);
+			WrappedTextColor = isWhiteText ? Color.White : Color.Black;
 		}
 
 		public int CompareTo(ColorsViewModel other) {
@@ -237,22 +258,44 @@ namespace Genealogy.ViewModel {
 
 		#endregion
 
+		#region Luminance for W3C
+
+
+		private static bool ShouldUseWhite(RGBPercent rgbPercent) {
+			double getC(double p) {
+				if (p <= 0.03928)
+					return p / 12.92;
+				return Math.Pow((p + 0.055) / 1.055, 2.4);
+			}
+			var L = (0.2126 * getC(rgbPercent.R)) + (0.7152 * getC(rgbPercent.G)) + (0.0722 * getC(rgbPercent.B));
+			return L <= 0.179;
+		}
+
+		private struct RGBPercent {
+			public double R;
+			public double G;
+			public double B;
+		}
+
+
+		#endregion
+
 		#region HSL For sorting 
 		/// <summary>
 		/// Creates the HSLColorStruct to allow for sorting of colors
 		/// </summary>
 		/// <param name="rgbColor">The color model to generate the HSL Struct</param>
 		/// <returns>The HSL Struct from the color</returns>
-		private HslColorStruct RgbToHsl(Color rgbColor) {
+		private static (HslColorStruct, RGBPercent) RgbToHsl(Color rgbColor) {
 			// Initialize result
 			var hslColor = new HslColorStruct();
 
 			// Convert RGB values to percentages
-			double r = (double)rgbColor.R / 255;
-			var g = (double)rgbColor.G / 255;
-			var b = (double)rgbColor.B / 255;
-			var a = (double)rgbColor.A / 255;
-
+			var r = rgbColor.R / 255.0;
+			var g = rgbColor.G / 255.0;
+			var b = rgbColor.B / 255.0;
+			double a = 1; //Throw away "A"
+			var rgb = new RGBPercent { R = r, G = g, B = b };
 			// Find min and max RGB values
 			var min = Math.Min(r, Math.Min(g, b));
 			var max = Math.Max(r, Math.Max(g, b));
@@ -267,7 +310,7 @@ namespace Genealogy.ViewModel {
 				hslColor.Hue = 0;
 				hslColor.Saturation = 0;
 				hslColor.Lightness = max;
-				return hslColor;
+				return (hslColor, rgb);
 			}
 
 			/* If we get to this point, we know we don't have a shade of gray. */
@@ -293,7 +336,7 @@ namespace Genealogy.ViewModel {
 			hslColor.Alpha = a;
 
 			// Set return value
-			return hslColor;
+			return (hslColor, rgb);
 
 
 		}
@@ -322,4 +365,5 @@ namespace Genealogy.ViewModel {
 
 		#endregion
 	}
+
 }

@@ -26,7 +26,7 @@
     <InstallUrl>https://raw.github.com/nwhansen/genealogy-viewer-deploy/master/</InstallUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationRevision>6</ApplicationRevision>
     <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -111,6 +111,9 @@
     <Reference Include="System.Threading.Tasks, Version=2.6.8.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.1.1.8\lib\net40\System.Threading.Tasks.dll</HintPath>
     </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\portable-net40+sl4+win8+wp8\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -169,6 +172,7 @@
       <DependentUpon>HighlightedAttributeConfiguration.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\Configuration\HighlightAttributeConfigurationViewModel.cs" />
+    <Compile Include="ViewModel\IHelpPresentGraph.cs" />
     <Compile Include="ViewModel\IndividualAttributesFactoryViewModel.cs" />
     <Compile Include="ViewModel\IEnumerableExtensions.cs" />
     <Compile Include="ViewModel\IndividualManagerViewModel.cs" />

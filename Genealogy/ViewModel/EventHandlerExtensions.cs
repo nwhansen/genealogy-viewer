@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 using Genealogy.UIInteraction;
-using Genealogy.ViewModel.Configuration;
 using Genealogy.ViewModel.UI;
 
 namespace Genealogy.ViewModel {
@@ -68,14 +67,20 @@ namespace Genealogy.ViewModel {
 		/// Presents a graph view Model to the view, returning the arguments
 		/// </summary>
 		/// <param name="presenter">the handler</param>
-		/// <param name="self">the object sending the event</param>
+		/// <param name="helper">A dependecy object to help reduce argument clutter</param>
+		/// <param name="title">The window title</param>
 		/// <param name="ccVm">The highlight configuration vm</param>
+		/// <param name="hacVM">The Highlight Attributes configuration</param>
 		/// <param name="individuals">The view model level individuals</param>
-		public static void PresentGraph(this EventHandler<PresentEventArgs> presenter, object self,
-			ColorConfigurationViewModel ccVm, HighlightAttributeConfigurationViewModel hacVM, IEnumerable<IndividualViewModel> individuals, IndividualManagerViewModel ivm) {
-			var vm = new GraphViewModel(ccVm, hacVM, individuals, ivm);
+		public static void PresentGraph(this EventHandler<PresentEventArgs> presenter, IHelpPresentGraph helper, string title, IEnumerable<IndividualViewModel> individuals) {
+			var vm = new GraphViewModel(
+				helper.ColorConfiguration,
+				helper.HighlightConfiguration,
+				helper.IndividualManagerViewModel,
+				individuals,
+				title);
 			var args = new PresentViewModelEventArgs<GraphViewModel>(vm, false);
-			presenter?.Invoke(self, args);
+			presenter?.Invoke(helper, args);
 		}
 
 		public static ViewModelInteractionState Present(this EventHandler<ConfirmationViewModelEventArgs> presenter, object self, string message, string caption, ConfirmationViewModelEventArgs.ConfirmationType confirmation) {

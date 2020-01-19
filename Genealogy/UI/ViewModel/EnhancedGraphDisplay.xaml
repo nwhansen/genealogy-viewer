@@ -6,6 +6,7 @@
              xmlns:hack="clr-namespace:AirspaceFixer;assembly=AirspaceFixer"
              mc:Ignorable="d" 
              Loaded="InjectLoader"
+             Title="{Binding Title}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />

@@ -104,10 +104,11 @@ namespace Genealogy.UI.ViewModel {
 
 		private void UpdateColors() {
 			foreach (var indvNode in individualNodes) {
-				Color newColor = assigner.GetFill(indvNode.Individual, ViewModel.SelectedIndividual);
+				var newColor = assigner.GetFill(indvNode.Individual, ViewModel.SelectedIndividual);
 				if (newColor != indvNode.Node.Attr.FillColor) {
 					//Update the fill
-					indvNode.Node.Attr.FillColor = newColor;
+					indvNode.Node.Attr.FillColor = newColor.Wrapped;
+					indvNode.Node.Label.FontColor = newColor.WrappedTextColor;
 					viewer.Invalidate(nodeMapping[indvNode.Node]);
 				}
 			}
@@ -153,7 +154,7 @@ namespace Genealogy.UI.ViewModel {
 				width = Details.Width;
 				Details.Width = 0;
 			}
-			((System.Windows.Controls.Button)sender).Content = Details.Width == 0 ? "Show" : "Collapse";
+			((System.Windows.Controls.Button)sender).Content = Details.Width == 0 ? "Show Side Panel" : "Collapse Side Panel";
 		}
 
 	}

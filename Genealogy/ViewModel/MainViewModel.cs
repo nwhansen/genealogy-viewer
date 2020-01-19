@@ -19,10 +19,9 @@ using Genealogy.ViewModel.Configuration;
 using Genealogy.ViewModel.UI;
 
 namespace Genealogy.ViewModel {
-	public class MainViewModel : INotifyPropertyChanged {
+	public class MainViewModel : INotifyPropertyChanged, IHelpPresentGraph {
 
 
-		private readonly ColorConfigurationViewModel colorConfiguration;
 		private readonly Action canGraphSelectedIndividualChanged;
 		private readonly Action computeTrueNegativeChanged;
 		private readonly Action graphWithAttributeChanged;
@@ -38,6 +37,8 @@ namespace Genealogy.ViewModel {
 		public IndividualManagerViewModel IndividualManagerViewModel { get; private set; }
 
 		public ObservableCollection<IndividualViewModel> Individuals { get; } = new ObservableCollection<IndividualViewModel>();
+
+
 
 		public HighlightAttributeConfigurationViewModel HighlightConfiguration {
 			get { return highlightAttributeConfiguration; }
@@ -108,6 +109,10 @@ namespace Genealogy.ViewModel {
 		/// Presents a the Global Population Command settings VM (basically a minimal wrapper around our individual manager)
 		/// </summary>
 		public CommandWrapper ConfigureGlobalPopulationSettingsCommand { get; }
+		/// <summary>
+		/// The color configuration
+		/// </summary>
+		public ColorConfigurationViewModel ColorConfiguration { get; }
 
 		#endregion
 
@@ -138,10 +143,10 @@ namespace Genealogy.ViewModel {
 		/// <param name="individualManager">The individual manager to use for our population</param>
 		public MainViewModel(IndividualManager individualManager) {
 			IndividualManagerViewModel = new IndividualManagerViewModel(individualManager);
-			colorConfiguration = new ColorConfigurationViewModel();
+			ColorConfiguration = new ColorConfigurationViewModel();
 			HighlightConfiguration = new HighlightAttributeConfigurationViewModel(IndividualManagerViewModel.AttributeFactory);
 			GraphSelectedIndividualCommand = new CommandWrapper(() => SelectedIndividual != null, GraphIndividual, out canGraphSelectedIndividualChanged);
-			ConfigureColorCommand = new CommandWrapper(() => PresentSimpleViewModel?.Present(this, colorConfiguration, true));
+			ConfigureColorCommand = new CommandWrapper(() => PresentSimpleViewModel?.Present(this, ColorConfiguration, true));
 			ConfigureHighlightCommand = new CommandWrapper(() => PresentSimpleViewModel?.Present(this, HighlightConfiguration, true));
 			ConfigureGlobalPopulationSettingsCommand = new CommandWrapper(() => PresentSimpleViewModel?.Present(this,
 				new PopulationConfigurationViewModel(IndividualManagerViewModel.Wrapped)));
@@ -238,7 +243,7 @@ namespace Genealogy.ViewModel {
 		/// View Model Logic to graph all individuals
 		/// </summary>
 		private void GraphEveryOne() {
-			PresentSimpleViewModel?.PresentGraph(this, colorConfiguration, HighlightConfiguration, Individuals, IndividualManagerViewModel);
+			PresentSimpleViewModel?.PresentGraph(this, "Entire Population", Individuals);
 		}
 
 		/// <summary>
@@ -251,7 +256,18 @@ namespace Genealogy.ViewModel {
 				int relatives = args.ViewModel.ShowRelatives ? args.ViewModel.RelationCount : 0;
 				var individuals = SelectedIndividual.Wrapped.FamilyTree(relatives).ToViewModel(IndividualManagerViewModel);
 				//preserve global configuration
-				PresentSimpleViewModel?.PresentGraph(this, colorConfiguration, HighlightConfiguration, individuals, IndividualManagerViewModel);
+				PresentSimpleViewModel?.PresentGraph(this, $"Individual Graph of: {SelectedIndividual.DisplayCode}", individuals);
+			}
+		}
+
+		private string AttributeTitleString {
+			get {
+				if (HighlightConfiguration.ToHighlight.Count > 3) {
+					//Generate a ... variant
+					return string.Join(",", HighlightConfiguration.ToHighlight.Take(3).Select(i => i.AttributeCode).Concat(new[] { "..." }));
+				} else {
+					return string.Join(",", HighlightConfiguration.ToHighlight.Select(i => i.AttributeCode));
+				}
 			}
 		}
 
@@ -261,7 +277,7 @@ namespace Genealogy.ViewModel {
 		private void GraphComputePossibleNegative() {
 			var except = AttributeHighlighting.PossiblePositive(HighlightConfiguration.ToHighlight.Select(i => i.Wrapped), 5).ToViewModel(IndividualManagerViewModel);
 			var individuals = IndividualManagerViewModel.Individuals.Except(except);
-			PresentSimpleViewModel?.PresentGraph(this, colorConfiguration, HighlightConfiguration, individuals, IndividualManagerViewModel);
+			PresentSimpleViewModel?.PresentGraph(this, $"Possible Negatives of Attribute(s): {AttributeTitleString}", individuals);
 		}
 
 		/// <summary>
@@ -271,7 +287,8 @@ namespace Genealogy.ViewModel {
 			//Generate except
 			var except = AttributeHighlighting.PossiblePositive(HighlightConfiguration.ToHighlight.Select(i => i.Wrapped)).ToViewModel(IndividualManagerViewModel);
 			var individuals = IndividualManagerViewModel.Individuals.Except(except);
-			PresentSimpleViewModel?.PresentGraph(this, colorConfiguration, HighlightConfiguration, individuals, IndividualManagerViewModel);
+			string attrs;
+			PresentSimpleViewModel?.PresentGraph(this, $"True Negative of Attribute(s): {AttributeTitleString}", individuals);
 		}
 
 		/// <summary>
@@ -285,7 +302,7 @@ namespace Genealogy.ViewModel {
 							viewModel.ShowChildren,
 							viewModel.LimitAncestors ? viewModel.AncestorCount : -1,
 							viewModel.ShowRelatives ? viewModel.RelationCount : -1).ToViewModel(IndividualManagerViewModel);
-			PresentSimpleViewModel?.PresentGraph(this, colorConfiguration, HighlightConfiguration, individuals, IndividualManagerViewModel);
+			PresentSimpleViewModel?.PresentGraph(this, $"Individuals with Attribute(s): {AttributeTitleString}", individuals);
 		}
 
 		#endregion
