@@ -287,7 +287,6 @@ namespace Genealogy.ViewModel {
 			//Generate except
 			var except = AttributeHighlighting.PossiblePositive(HighlightConfiguration.ToHighlight.Select(i => i.Wrapped)).ToViewModel(IndividualManagerViewModel);
 			var individuals = IndividualManagerViewModel.Individuals.Except(except);
-			string attrs;
 			PresentSimpleViewModel?.PresentGraph(this, $"True Negative of Attribute(s): {AttributeTitleString}", individuals);
 		}
 
